@@ -1,0 +1,32 @@
+This is a branch for new lua config parser.
+
+Plan alpha:
+1) Minimal interface
+
+int
+config_create(const char *);
+
+int
+config_open_sections(const char *);
+
+// "#" prefix should be implemented
+long
+config_get_long(const char *);
+
+const char *
+config_get_string(const char *);
+
+bool
+config_get_bool(const char *);
+
+int
+config_close_sections(int);
+
+void
+config_destroy(void);
+
+2) Think about making and linking the library. (Shared objects?)
+
+3) Think about using inttypes.h. Find out if we can use -std=gnu99 flag in computer classes.
+
+4) Think about actual script parsing (not just tree objects declarations, but also assignment operators etc)
