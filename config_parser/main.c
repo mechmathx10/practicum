@@ -1,4 +1,5 @@
 #include "config_parser.h"
+#include "array.h"
 
 #include <stdio.h>
 #include <getopt.h>
@@ -64,6 +65,20 @@ main(int argc, char ** argv)
 {
   process_options(argc, argv);
   config_create(tconfig.config_filename);
+
+  struct array *int_arr = (struct array *) malloc(sizeof(struct array));;
+  init_array(int_arr, sizeof(int));
+  const size_t arr_size = 100;
+  int *arr = (int *) malloc(arr_size * sizeof(int));
+  for (size_t i = 0; i < arr_size; ++i)
+    {
+      arr[i] = i * i;
+      add_element(int_arr, (void *)(&arr[i]));
+    }
+  print_int_array(int_arr);
+  destroy_array(int_arr);
+  free(int_arr);
+  free(arr);
   config_destroy();
   return 0;
 }

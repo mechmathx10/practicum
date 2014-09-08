@@ -30,3 +30,5 @@ config_destroy(void);
 3) Think about using inttypes.h. Find out if we can use -std=gnu99 flag in computer classes.
 
 4) Think about actual script parsing (not just tree objects declarations, but also assignment operators etc)
+
+5) Add normal error processing: for now, program just DIE every time error is occured
