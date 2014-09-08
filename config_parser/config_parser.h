@@ -1,6 +1,8 @@
 #ifndef CONFIG_PARSER_H
 #define CONFIG_PARSER_H
 
+#include "input.h"
+
 #include <inttypes.h>
 
 int

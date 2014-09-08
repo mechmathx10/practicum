@@ -3,7 +3,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <stdio.h>
-
+#include <unistd.h>
 
 struct input_file
 open_file(const char * filename)
