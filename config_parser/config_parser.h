@@ -3,7 +3,7 @@
 
 #include "input.h"
 
-#include <inttypes.h>
+#include <stdbool.h>
 
 int
 config_create(const char *);
@@ -18,7 +18,7 @@ config_get_long(const char *);
 const char *
 config_get_string(const char *);
 
-uint8_t
+bool
 config_get_bool(const char *);
 
 int

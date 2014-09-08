@@ -68,7 +68,7 @@ main(int argc, char ** argv)
 
   struct array *int_arr = (struct array *) malloc(sizeof(struct array));;
   init_array(int_arr, sizeof(int));
-  const size_t arr_size = 100;
+  const size_t arr_size = 10;
   int *arr = (int *) malloc(arr_size * sizeof(int));
   for (size_t i = 0; i < arr_size; ++i)
     {
