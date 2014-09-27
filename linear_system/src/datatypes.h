@@ -2,6 +2,16 @@
 #define DATATYPES_H
 
 
+#define UNUSED(PARAM) (void) (PARAM);
+
+
+enum error_type
+{
+  ER_CORRECT = 0,
+  ER_ERROR = 1,
+};
+
+
 struct vector
 {
   double *values;
@@ -23,13 +33,6 @@ struct block_matrix
   double *blocks;
   int size;
   int block_size;
-};
-
-
-enum error_types
-{
-  ER_CORRECT = 0,
-  ER_ERROR = 1,
 };
 
 

@@ -1,36 +1,34 @@
 # makefile for linear system problem
 
 CC=gcc
-CFLAGS=-g -O3
+CFLAGS=-g -O3 -std=gnu99
 CPPFLAGS=-Wall -Wextra -Werror -pedantic
-
-vpath %.c src
-vpath %.h src
-vpath %.o obj
 
 OBJDIR=obj
 SRCDIR=src
+EXEDIR=exe
 
 OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o)
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
+EXECUTABLE=$(addprefix $(EXEDIR)/, main)
 
-all : main clean
+all : main
 
-$(OBJECTS) : $(NOIST_HEADERS) | $(OBJDIR)
+$(OBJDIR)/input.o : $(SRCDIR)/input.h $(SRCDIR)/input.c
+	$(CC) -c $(SRCDIR)/input.c -o $(OBJDIR)/input.o $(CFLAGS) $(CPPFLAGS)
 
-input.o : input.h input.o
-	$(CC) input.c -c $(CFLAGS) $(CPPFLAGS)
+$(OBJDIR)/output.o : $(SRCDIR)/output.h $(SRCDIR)/output.c
+	$(CC) -c $(SRCDIR)/output.c -o $(OBJDIR)/output.o $(CFLAGS) $(CPPFLAGS)
 
-output.o : output.h output.o
-	$(CC) output.c -c $(CFLAGS) $(CPPFLAGS)
+$(OBJDIR)/main.o : $(SRCDIR)/main.c
+	$(CC) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o $(CFLAGS) $(CPPFLAGS)
 
-main.o : main.c
-	$(CC) main.c -c $(CFLAGS) $(CPPFLAGS)
+#$(OBJECTS) : $(NOIST_HEADERS) | $(OBJDIR)
 
 clean:
 	rm obj/* -rf
 	rm src/*~ -f
-	rm main
+	rm $(EXECUTABLE) -f
 
 main : $(OBJECTS)
-	$(CC) $(OBJECTS) -o main $(CFLAGS) $(CPPFLAGS)
+	$(CC) $(OBJECTS) -o $(EXECUTABLE) $(CFLAGS) $(CPPFLAGS)
