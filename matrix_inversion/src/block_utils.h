@@ -7,21 +7,21 @@
 
 inline
 double *
-get_block_start(struct block_matrix *, int, int);
+get_block_start(const struct block_matrix *, int, int);
 
 
 inline
 int
-get_block_height(struct block_matrix *, int, int);
+get_block_height(const struct block_matrix *, int, int);
 
 
 inline
 int
-get_block_width(struct block_matrix *, int, int);
+get_block_width(const struct block_matrix *, int, int);
 
 
 block
-get_block(struct block_matrix *, int, int);
+get_block(const struct block_matrix *, int, int);
 
 /* ----------------------------------------------------------- */
 

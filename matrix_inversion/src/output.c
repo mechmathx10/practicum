@@ -6,7 +6,7 @@
 /* ----------------------------------------------------------- */
 
 void
-print_vector(FILE *output_stream, struct vector *vector)
+print_vector(FILE *output_stream, const struct vector * const vector)
 {
 #if EXTENDED_OUTPUT
   fprintf(output_stream, "Vector size: %d\n", vector->size);
@@ -18,7 +18,8 @@ print_vector(FILE *output_stream, struct vector *vector)
 /* ----------------------------------------------------------- */
 
 void
-print_simple_matrix(FILE *output_stream, struct simple_matrix *matrix)
+print_simple_matrix(FILE *output_stream,
+                    const struct simple_matrix * const matrix)
 {
 #if EXTENDED_OUTPUT
   fprintf(output_stream, "Matrix sizes: %dx%d\n", matrix->height,
@@ -27,7 +28,7 @@ print_simple_matrix(FILE *output_stream, struct simple_matrix *matrix)
   for (int i = 0; i < matrix->height; ++i)
     {
       for (int j = 0; j < matrix->width; ++j)
-        fprintf(output_stream, "%f ", matrix->values[i * matrix->height + j]);
+        fprintf(output_stream, "%f ", matrix->values[i * matrix->width + j]);
       fprintf(output_stream, "\n");
     }
 }
@@ -36,8 +37,8 @@ print_simple_matrix(FILE *output_stream, struct simple_matrix *matrix)
 
 void
 print_extended_matrix(FILE *output_stream,
-                      struct simple_matrix *matrix,
-                      struct vector * vector)
+                      const struct simple_matrix * const matrix,
+                      const struct vector * const vector)
 {
 #if EXTENDED_OUTPUT
   fprintf(output_stream, "Variables count: %d\n", matrix->height);
@@ -53,7 +54,8 @@ print_extended_matrix(FILE *output_stream,
 /* ----------------------------------------------------------- */
 
 void
-print_block_matrix(FILE *output_stream, struct block_matrix *matrix)
+print_block_matrix(FILE *output_stream,
+                   const struct block_matrix * const matrix)
 {
   /* blocks linear count */
   int blc = DIV_UP(matrix->size, matrix->block_size);

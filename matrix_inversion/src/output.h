@@ -8,19 +8,21 @@
 /* ----------------------------------------------------------- */
 
 void
-print_vector(FILE *, struct vector *);
+print_vector(FILE *, const struct vector * const);
 
 
 void
-print_simple_matrix(FILE *, struct simple_matrix *);
+print_simple_matrix(FILE *, const struct simple_matrix * const);
 
 
 void
-print_extended_matrix(FILE *, struct simple_matrix *, struct vector *);
+print_extended_matrix(FILE *,
+                      const struct simple_matrix * const,
+                      const struct vector * const);
 
 
 void
-print_block_matrix(FILE *, struct block_matrix *);
+print_block_matrix(FILE *, const struct block_matrix * const);
 
 /* ----------------------------------------------------------- */
 
