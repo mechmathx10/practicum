@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+/* ----------------------------------------------------------- */
+
 /* lss - linear system solver */
 struct lss_config
 {
@@ -35,6 +37,7 @@ print_usage(FILE *out, char *program_name)
           program_name);
 }
 
+/* ----------------------------------------------------------- */
 
 static
 void
@@ -59,6 +62,7 @@ process_options(int argc, char ** argv)
     }
 }
 
+/* ----------------------------------------------------------- */
 
 int
 main(int argc, char ** argv)
@@ -67,22 +71,32 @@ main(int argc, char ** argv)
 
   struct vector v1, v2;
   struct simple_matrix m1, m2;
+  struct block_matrix bm;
   
   FILE *vector_file = fopen("file_vector", "r");
-  if (read_vector(vector_file, &v1) == ER_CORRECT)
+  if (read_vector(vector_file, &v1) == ET_CORRECT)
     print_vector(stdout, &v1);
   fclose(vector_file);
 
   FILE *matrix_file = fopen("file_matrix", "r");
-  if (read_simple_matrix(matrix_file, &m1) == ER_CORRECT)
+  if (read_simple_matrix(matrix_file, &m1) == ET_CORRECT)
     print_simple_matrix(stdout, &m1);
   fclose(matrix_file);
 
   FILE *extended_file = fopen("file_extended", "r");
-  if (read_extended_matrix(extended_file, &m2, &v2) == ER_CORRECT)
+  if (read_extended_matrix(extended_file, &m2, &v2) == ET_CORRECT)
     print_extended_matrix(stdout, &m2, &v2);
   fclose(extended_file);
+
+  FILE *block_file = fopen("file_block", "r");
+  bm.block_size = 3;
+  if (read_block_matrix(block_file, &bm) == ET_CORRECT)
+    {
+      print_block_matrix(stdout, &bm);
+    }
+  fclose(block_file);
 
   return 0;
 }
 
+/* ----------------------------------------------------------- */

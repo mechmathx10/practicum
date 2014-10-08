@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 
+/* ----------------------------------------------------------- */
 
 void
 print_vector(FILE *, struct vector *);
@@ -17,5 +18,10 @@ print_simple_matrix(FILE *, struct simple_matrix *);
 void
 print_extended_matrix(FILE *, struct simple_matrix *, struct vector *);
 
+
+void
+print_block_matrix(FILE *, struct block_matrix *);
+
+/* ----------------------------------------------------------- */
 
 #endif

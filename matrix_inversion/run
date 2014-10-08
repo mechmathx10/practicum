@@ -1,0 +1,9 @@
+#!/bin/bash
+
+make
+echo " --------- STARTED -----------"
+cd exe/
+./main
+cd ..
+echo " --------- DONE -----------"
+make clean

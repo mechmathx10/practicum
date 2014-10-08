@@ -4,11 +4,16 @@
 
 #define UNUSED(PARAM) (void) (PARAM);
 
+#define DIV_UP(A, B) (A / B) + ((A) % (B) == 0 ? 0 : 1)
+
+/* ----------------------------------------------------------- */
 
 enum error_type
 {
-  ER_CORRECT = 0,
-  ER_ERROR = 1,
+  ET_CORRECT = 0,
+  ET_ERROR = 1,
+  ET_INPUT_ERROR = 2,
+  ET_ARG_ERROR = 3,
 };
 
 
@@ -30,10 +35,13 @@ struct simple_matrix
 struct block_matrix
 {
   double *values;
-  double *blocks;
   int size;
   int block_size;
 };
 
+
+typedef struct simple_matrix block;
+
+/* ----------------------------------------------------------- */
 
 #endif // DATATYPES_H
