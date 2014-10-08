@@ -115,6 +115,7 @@ main(int argc, char ** argv)
   DELETE(bm);
 
   get_block(&bm, 0, 0);
+  put_block(&bm, NULL, 0, 0);
 
   return 0;
 }
