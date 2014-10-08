@@ -1,4 +1,5 @@
 #include "output.h"
+#include "block_utils.h"
 
 #define EXTENDED_OUTPUT 1
 
@@ -56,9 +57,6 @@ print_block_matrix(FILE *output_stream, struct block_matrix *matrix)
 {
   /* blocks linear count */
   int blc = DIV_UP(matrix->size, matrix->block_size);
-  /* last block size */
-  int lbs = matrix->size % matrix->block_size == 0 ? matrix->block_size :
-            matrix->size % matrix->block_size;
 #if EXTENDED_OUTPUT
   fprintf(output_stream, "Size: %d\tBlock size:%d\n", matrix->size,
                                                     matrix->block_size);
@@ -67,11 +65,9 @@ print_block_matrix(FILE *output_stream, struct block_matrix *matrix)
     {
       for (int j = 0; j < blc; ++j)
         {
-          int height = i == blc - 1 ? lbs : matrix->block_size;
-          int width = j == blc - 1 ? lbs : matrix->block_size;
-          double *block_ptr = &matrix->values[
-                                  (i * matrix->size * matrix->block_size) +
-                                  (j * ((i == blc - 1) ? lbs : matrix->block_size) * matrix->block_size)];
+          int height = get_block_height(matrix, i, j);
+          int width = get_block_width(matrix, i, j);
+          double *block_ptr = get_block_start(matrix, i, j);
 #if EXTENDED_OUTPUT
           fprintf(output_stream, "------------------\nBlock (%d, %d)\n", i, j);
 #endif

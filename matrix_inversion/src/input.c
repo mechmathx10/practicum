@@ -1,4 +1,5 @@
 #include "input.h"
+#include "block_utils.h"
 
 #include <stdlib.h>
 
@@ -187,9 +188,6 @@ read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
     {
       for (int j = 0; j < matrix->size; ++j)
         {
-          /*((i / M) * K + j / M)
-          (M * ((((i / M) * K + j / M) / K == K - 1) ? N % M : M))
-          ((((i / M) * K + j / M) % K == K - 1) ? N % M : M)*/
           current_index = ((((i / M) * K + j / M) / K) * (N * M)) +
                         ((((i / M) * K + j / M)) % K) *
                         (M * ((((i / M) * K + j / M) / K == K - 1) ? N % M : M))
@@ -208,3 +206,5 @@ read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
 #undef MAGIC
   return ET_CORRECT;
 }
+
+/* ----------------------------------------------------------- */

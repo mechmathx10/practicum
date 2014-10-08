@@ -1,5 +1,6 @@
 #include "input.h"
 #include "output.h"
+#include "block_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,15 +13,18 @@ struct lss_config
 {
   char *input_filename;
   int has_input_file;
+  int block_size;
 };
 
 static struct lss_config lconfig = {
   .input_filename = (char *) NULL,
   .has_input_file = 0,
+  .block_size = 0,
 };
 
 struct option options[] = {
-  { .name = "input-file",    .val = 'i',  .has_arg = required_argument },
+  { .name = "input_file",    .val = 'i',  .has_arg = required_argument },
+  { .name = "block_size",    .val = 'b',  .has_arg = required_argument },
   { .name = "help",          .val = 'h',  .has_arg = no_argument },
   { .name = NULL },
 };
@@ -32,7 +36,8 @@ print_usage(FILE *out, char *program_name)
 {
   fprintf(out, 
           "Usage: %s [OPTIONS]\n\n"
-          "  --config-file, -c [filename]    config file.\n"
+          "  --input_file, -c [filename]     deprecated.\n"
+          "  --block_size, -b [size]         matrix block size.\n"
           "  --help, -h                      print this message\n",
           program_name);
 }
@@ -44,13 +49,16 @@ void
 process_options(int argc, char ** argv)
 {
   int opt;
-  while ((opt = getopt_long(argc, argv, "c:h", options, NULL)) != -1)
+  while ((opt = getopt_long(argc, argv, "c:b:h", options, NULL)) != -1)
     {
       switch (opt)
         {
         case 'c':
           lconfig.input_filename = optarg;
           lconfig.has_input_file = 0;
+          break;
+        case 'b':
+          lconfig.block_size = atoi(optarg);
           break;
         case 'h':
           print_usage(stdout, argv[0]);
@@ -59,6 +67,11 @@ process_options(int argc, char ** argv)
           print_usage(stderr, argv[0]);
           exit(1);
         }
+    }
+  if (lconfig.block_size < 1)
+    {
+      fprintf(stderr, "Non-positive block size: %d\n", lconfig.block_size);
+      exit(1);
     }
 }
 
@@ -77,24 +90,31 @@ main(int argc, char ** argv)
   if (read_vector(vector_file, &v1) == ET_CORRECT)
     print_vector(stdout, &v1);
   fclose(vector_file);
+  DELETE(v1);
 
   FILE *matrix_file = fopen("file_matrix", "r");
   if (read_simple_matrix(matrix_file, &m1) == ET_CORRECT)
     print_simple_matrix(stdout, &m1);
   fclose(matrix_file);
+  DELETE(m1);
 
   FILE *extended_file = fopen("file_extended", "r");
   if (read_extended_matrix(extended_file, &m2, &v2) == ET_CORRECT)
     print_extended_matrix(stdout, &m2, &v2);
   fclose(extended_file);
+  DELETE(m2);
+  DELETE(v2);
 
   FILE *block_file = fopen("file_block", "r");
-  bm.block_size = 3;
+  bm.block_size = lconfig.block_size;
   if (read_block_matrix(block_file, &bm) == ET_CORRECT)
     {
       print_block_matrix(stdout, &bm);
     }
   fclose(block_file);
+  DELETE(bm);
+
+  get_block(&bm, 0, 0);
 
   return 0;
 }
