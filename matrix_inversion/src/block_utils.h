@@ -23,6 +23,7 @@ get_block_width(const struct block_matrix *, int, int);
 block
 get_block(const struct block_matrix *, int, int);
 
+
 void
 put_block(struct block_matrix *, block *, int, int);
 
