@@ -9,7 +9,7 @@ void
 print_vector(FILE *output_stream, const struct vector * const vector)
 {
 #if EXTENDED_OUTPUT
-  fprintf(output_stream, "Vector size: %d\n", vector->size);
+  fprintf(output_stream, "\nVector size: %d\n", vector->size);
 #endif
   for (int i = 0; i < vector->size; ++i)
     fprintf(output_stream, "%f\n", vector->values[i]);
@@ -22,7 +22,7 @@ print_simple_matrix(FILE *output_stream,
                     const struct simple_matrix * const matrix)
 {
 #if EXTENDED_OUTPUT
-  fprintf(output_stream, "Matrix sizes: %dx%d\n", matrix->height,
+  fprintf(output_stream, "\nMatrix size: %dx%d\n", matrix->height,
                                                   matrix->width);
 #endif
   for (int i = 0; i < matrix->height; ++i)
@@ -41,7 +41,7 @@ print_extended_matrix(FILE *output_stream,
                       const struct vector * const vector)
 {
 #if EXTENDED_OUTPUT
-  fprintf(output_stream, "Variables count: %d\n", matrix->height);
+  fprintf(output_stream, "\nVariables count: %d\n", matrix->height);
 #endif
   for (int i = 0; i < matrix->height; ++i)
     {
@@ -60,7 +60,7 @@ print_block_matrix(FILE *output_stream,
   /* blocks linear count */
   int blc = DIV_UP(matrix->size, matrix->block_size);
 #if EXTENDED_OUTPUT
-  fprintf(output_stream, "Size: %d\tBlock size:%d\n", matrix->size,
+  fprintf(output_stream, "\nSize: %d\nBlock size: %d\n", matrix->size,
                                                     matrix->block_size);
 #endif
   for (int i = 0; i < blc; ++i)

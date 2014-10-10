@@ -1,6 +1,7 @@
 #include "input.h"
 #include "output.h"
 #include "block_utils.h"
+#include "matrix_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,35 +83,35 @@ main(int argc, char ** argv)
 {
   process_options(argc, argv);
 
+#if 0
   struct vector v1, v2;
   struct simple_matrix m1, m2;
-  struct block_matrix bm;
-  
-  FILE *vector_file = fopen("file_vector", "r");
+
+  FILE *vector_file = fopen("test_vector", "r");
   if (read_vector(vector_file, &v1) == ET_CORRECT)
     print_vector(stdout, &v1);
   fclose(vector_file);
   DELETE(v1);
 
-  FILE *matrix_file = fopen("file_matrix", "r");
+  FILE *matrix_file = fopen("test_matrix", "r");
   if (read_simple_matrix(matrix_file, &m1) == ET_CORRECT)
     print_simple_matrix(stdout, &m1);
   fclose(matrix_file);
   DELETE(m1);
 
-  FILE *extended_file = fopen("file_extended", "r");
+  FILE *extended_file = fopen("test_extended", "r");
   if (read_extended_matrix(extended_file, &m2, &v2) == ET_CORRECT)
     print_extended_matrix(stdout, &m2, &v2);
   fclose(extended_file);
   DELETE(m2);
   DELETE(v2);
+#endif
 
-  FILE *block_file = fopen("file_block", "r");
+  struct block_matrix bm;
+  FILE *block_file = fopen("test_block", "r");
   bm.block_size = lconfig.block_size;
   if (read_block_matrix(block_file, &bm) == ET_CORRECT)
-    {
       print_block_matrix(stdout, &bm);
-    }
 
   block b;
   b.values = malloc(SQUARE_DOUB(lconfig.block_size));
@@ -121,7 +122,10 @@ main(int argc, char ** argv)
   fclose(block_file);
   DELETE(bm);
 
-  put_block(&bm, NULL, 0, 0);
+  block b2;
+  make_zero_block(&b2, 10);
+  print_simple_matrix(stdout, &b2);
+  DELETE(b2);
 
   return 0;
 }

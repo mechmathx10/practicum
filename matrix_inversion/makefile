@@ -9,7 +9,7 @@ SRCDIR=src
 EXEDIR=exe
 TEXDIR=latex
 
-OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o)
+OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o matrix_utils.o)
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
 EXECUTABLE=$(addprefix $(EXEDIR)/, main)
 
@@ -17,6 +17,9 @@ all : tex exe
 
 $(OBJDIR)/block_utils.o : $(SRCDIR)/block_utils.h $(SRCDIR)/block_utils.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/block_utils.c -o $(OBJDIR)/block_utils.o $(CFLAGS) $(CPPFLAGS)
+
+$(OBJDIR)/matrix_utils.o : $(SRCDIR)/matrix_utils.h $(SRCDIR)/matrix_utils.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/matrix_utils.c -o $(OBJDIR)/matrix_utils.o $(CFLAGS) $(CPPFLAGS)
 
 $(OBJDIR)/input.o : $(SRCDIR)/input.h $(SRCDIR)/input.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/input.c -o $(OBJDIR)/input.o $(CFLAGS) $(CPPFLAGS)
