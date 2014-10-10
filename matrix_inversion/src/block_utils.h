@@ -20,8 +20,8 @@ int
 get_block_width(const struct block_matrix *, int, int);
 
 
-block
-get_block(const struct block_matrix *, int, int);
+void
+get_block(const struct block_matrix *, block *, int, int);
 
 
 void

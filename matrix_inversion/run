@@ -1,28 +1,28 @@
 #!/bin/bash
 
-if [ "$1"=="clean" ]
+if [ "$1" == "clean" ]
 	then
 		echo "Cleaning..."
-		rm obj/* -rf
-		rm src/*~ -f
-		rm exe/main -f
-		cd latex/
-		for f in `find . -not -name "*.tex"`;
+		rm obj/* -rvf
+		rm src/*~ -fv
+		rm exe/main -fv
+		for f in `find latex/ -not -name "*.tex"`;
 		do
 			if [ -f "$f" ]
 			then
-				rm "$f";
+				rm "$f" -fv
 			fi;
 		done;
-		cd ..
 		echo "Done"
 		exit 1
 fi;
 
+pdflatex latex/report.tex > /dev/null
+echo "Report compiled"
 make
 echo " --------- STARTED -----------"
 cd exe/
-valgrind ./main $@
+./main $@
 cd ..
 echo " --------- DONE -----------"
-make clean
+

@@ -111,10 +111,16 @@ main(int argc, char ** argv)
     {
       print_block_matrix(stdout, &bm);
     }
+
+  block b;
+  b.values = malloc(SQUARE_DOUB(lconfig.block_size));
+  get_block(&bm, &b, 0, 0);
+  print_simple_matrix(stdout, &b);
+  DELETE(b);
+
   fclose(block_file);
   DELETE(bm);
 
-  get_block(&bm, 0, 0);
   put_block(&bm, NULL, 0, 0);
 
   return 0;

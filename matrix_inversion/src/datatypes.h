@@ -7,6 +7,8 @@
 
 #define DELETE(X) free((X).values)
 
+#define SQUARE_DOUB(A) (A) * (A) * sizeof(double)
+
 /* ----------------------------------------------------------- */
 
 enum error_type

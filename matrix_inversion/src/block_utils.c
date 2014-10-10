@@ -1,5 +1,7 @@
 #include "block_utils.h"
 
+#include <string.h>
+
 /* ----------------------------------------------------------- */
 
 inline
@@ -39,13 +41,14 @@ get_block_width(const struct block_matrix *matrix, int i, int j)
 
 /* ----------------------------------------------------------- */
 
-block get_block(const struct block_matrix *matrix, int i, int j)
+void get_block(const struct block_matrix *matrix, block *buffer, int i, int j)
 {
-  block result;
-  UNUSED(matrix);
-  UNUSED(i);
-  UNUSED(j);
-  return result;
+  int height = get_block_height(matrix, i, j);
+  int width = get_block_width(matrix, i, j);
+  buffer->height = height;
+  buffer->width = width;
+  memcpy(buffer->values, get_block_start(matrix, i, j),
+         height * width * sizeof(double));
 }
 
 /* ----------------------------------------------------------- */
@@ -53,10 +56,10 @@ block get_block(const struct block_matrix *matrix, int i, int j)
 void
 put_block(struct block_matrix *matrix, block *buffer, int i, int j)
 {
-  UNUSED(matrix);
-  UNUSED(buffer);
-  UNUSED(i);
-  UNUSED(j);
+  int height = get_block_height(matrix, i, j);
+  int width = get_block_width(matrix, i, j);
+  memcpy(get_block_start(matrix, i, j), buffer->values,
+         height * width * sizeof(double));
 }
 
 /* ----------------------------------------------------------- */

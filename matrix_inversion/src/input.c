@@ -176,8 +176,7 @@ read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
       return ET_INPUT_ERROR;
     }
 
-  matrix->values = (double *) malloc(matrix->size * matrix->size
-                                                  * sizeof(double));
+  matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
 
 #define MAGIC 100500
   int N = matrix->size;
