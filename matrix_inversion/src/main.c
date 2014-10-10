@@ -2,6 +2,7 @@
 #include "output.h"
 #include "block_utils.h"
 #include "matrix_utils.h"
+#include "solver.h"
 
 #include <stdio.h>
 #include <stdlib.h>

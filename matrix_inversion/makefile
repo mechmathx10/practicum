@@ -9,7 +9,7 @@ SRCDIR=src
 EXEDIR=exe
 TEXDIR=latex
 
-OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o matrix_utils.o)
+OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o matrix_utils.o solver.o)
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
 EXECUTABLE=$(addprefix $(EXEDIR)/, main)
 
@@ -27,10 +27,11 @@ $(OBJDIR)/input.o : $(SRCDIR)/input.h $(SRCDIR)/input.c $(NOIST_HEADERS)
 $(OBJDIR)/output.o : $(SRCDIR)/output.h $(SRCDIR)/output.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/output.c -o $(OBJDIR)/output.o $(CFLAGS) $(CPPFLAGS)
 
+$(OBJDIR)/solver.o : $(SRCDIR)/solver.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/solver.c -o $(OBJDIR)/solver.o $(CFLAGS) $(CPPFLAGS)
+
 $(OBJDIR)/main.o : $(SRCDIR)/main.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o $(CFLAGS) $(CPPFLAGS)
-
-#$(OBJECTS) : $(NOIST_HEADERS)
 
 clean:
 	@ rm obj/* -rfv
