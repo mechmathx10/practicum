@@ -1,7 +1,7 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
 
-#define UNUSED(PARAM) (void) (PARAM);
+#define UNUSED(PARAM) (void) (PARAM)
 
 #define DIV_UP(A, B) (A / B) + ((A) % (B) == 0 ? 0 : 1)
 
