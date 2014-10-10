@@ -33,9 +33,9 @@ clean:
 	@ rm obj/* -rfv
 	@ rm src/*~ -fv
 	@ rm $(EXECUTABLE) -fv
-	find $(EXEDIR)/ -type f -not -name "test_*" -not -name "data_*" -exec rm -fv {} \;
-	find $(TEXDIR)/ -type f -not -name "*.tex" -exec rm -fv {} \;
-	find . -maxdepth 0 -type f -not -name "(README|makefile|run)" -exec rm -fv {} \;
+	@ find $(EXEDIR)/ -type f -not -name "test_*" -not -name "data_*" -exec rm -fv {} \;
+	@ find $(TEXDIR)/ -type f -not -name "*.tex" -exec rm -fv {} \;
+	@ find . -maxdepth 0 -type f -not -name "(README|makefile|run)" -exec rm -fv {} \;
 
 tex:
 	pdflatex -output-directory $(TEXDIR) $(TEXDIR)/report.tex
