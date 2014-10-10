@@ -1,5 +1,24 @@
 #!/bin/bash
 
+if [ "$1"=="clean" ]
+	then
+		echo "Cleaning..."
+		rm obj/* -rf
+		rm src/*~ -f
+		rm exe/main -f
+		cd latex/
+		for f in `find . -not -name "*.tex"`;
+		do
+			if [ -f "$f" ]
+			then
+				rm "$f";
+			fi;
+		done;
+		cd ..
+		echo "Done"
+		exit 1
+fi;
+
 make
 echo " --------- STARTED -----------"
 cd exe/
@@ -7,4 +26,3 @@ valgrind ./main $@
 cd ..
 echo " --------- DONE -----------"
 make clean
-echo $@
