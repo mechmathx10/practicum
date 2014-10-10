@@ -110,6 +110,7 @@ main(int argc, char ** argv)
   DELETE(v2);
 #endif
 
+#if 0
   struct block_matrix bm;
   FILE *block_file = fopen("test_block", "r");
   bm.block_size = lconfig.block_size;
@@ -129,6 +130,27 @@ main(int argc, char ** argv)
   make_unit_block(&b2, 10);
   print_simple_matrix(stdout, &b2);
   DELETE(b2);
+#endif
+
+  block b3, b4;
+  make_unit_block(&b3, 2);
+  make_unit_block(&b4, 2);
+  print_simple_matrix(stdout, &b3);
+  print_simple_matrix(stdout, &b4);
+  b3.values[0] = 2;
+  b3.values[1] = 1;
+  inverse_block(&b3, &b4);
+  print_simple_matrix(stdout, &b3);
+  print_simple_matrix(stdout, &b4);
+
+  block b5;
+  make_zero_block(&b5, 2);
+  b3.values[0] = 2;
+  b3.values[1] = 1;
+  multiply_blocks(&b3, &b4, &b5);
+  print_simple_matrix(stdout, &b3);
+  print_simple_matrix(stdout, &b4);
+  print_simple_matrix(stdout, &b5);
 
   return 0;
 }

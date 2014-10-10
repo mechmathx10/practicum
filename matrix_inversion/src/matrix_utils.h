@@ -17,7 +17,7 @@ void
 make_unit_block(block *, const int);
 
 
-// we assume that the first arg is a square block
+// we assume that the both args are square blocks of the same size
 enum error_type
 inverse_block(block *, block *);
 

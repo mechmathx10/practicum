@@ -8,9 +8,9 @@ if [ "$1" == "clean" ]
 		exit 1
 fi;
 
-make
-echo "---------- STARTED -----------"
-cd exe/
-./main $@
-cd ..
+make exe &&
+echo "---------- STARTED -----------" && 
+cd exe/ &&
+./main $@ &&
+cd .. &&
 echo "----------- DONE -------------"
