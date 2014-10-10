@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+#define DEFAULT_BLOCK_SIZE 3
+
 /* ----------------------------------------------------------- */
 
 /* lss - linear system solver */
@@ -71,8 +73,9 @@ process_options(int argc, char ** argv)
     }
   if (lconfig.block_size < 1)
     {
-      fprintf(stderr, "Non-positive block size: %d\n", lconfig.block_size);
-      exit(1);
+      fprintf(stderr, "Block size is not set or negative and been set to: %d\n",
+                      DEFAULT_BLOCK_SIZE);
+      lconfig.block_size = DEFAULT_BLOCK_SIZE;
     }
 }
 
@@ -123,7 +126,7 @@ main(int argc, char ** argv)
   DELETE(bm);
 
   block b2;
-  make_zero_block(&b2, 10);
+  make_unit_block(&b2, 10);
   print_simple_matrix(stdout, &b2);
   DELETE(b2);
 
