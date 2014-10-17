@@ -17,6 +17,14 @@ enum error_type
   ET_ERROR = 1,
   ET_INPUT_ERROR = 2,
   ET_ARG_ERROR = 3,
+  ET_FILE_ERROR = 4,
+};
+
+
+enum stream_type
+{
+  ST_FILE = 0,
+  ST_CONSOLE = 1,
 };
 
 

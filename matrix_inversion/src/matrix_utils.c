@@ -128,6 +128,7 @@ simple_matrix_norm(const block * const matrix)
 
 /* ----------------------------------------------------------- */
 
+// TODO : implement block_matrix_norm
 double
 block_matrix_norm(const struct block_matrix * const matrix)
 {

@@ -7,9 +7,12 @@
 
 static
 enum error_type
-read_values(FILE *input_stream, double *values, int count)
+read_values(FILE *input_stream, double *values,
+            int count, enum stream_type source_type)
 {
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input %d real values: \n", count);
   for (int i = 0; i < count; ++i)
     {
       r = fscanf(input_stream, "%lf", &values[i]);
@@ -26,9 +29,12 @@ read_values(FILE *input_stream, double *values, int count)
 /* ----------------------------------------------------------- */
 
 enum error_type
-read_vector(FILE *input_stream, struct vector *vector)
+read_vector(FILE *input_stream, struct vector *vector,
+            enum stream_type source_type)
 {
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input vector size: ");
   r = fscanf(input_stream, "%d", &vector->size);
   if (r < 1)
     {
@@ -43,15 +49,19 @@ read_vector(FILE *input_stream, struct vector *vector)
     }
 
   vector->values = (double *) malloc(vector->size * sizeof(double));
-  return read_values(input_stream, vector->values, vector->size);
+  return read_values(input_stream, vector->values, vector->size, source_type);
 }
 
 /* ----------------------------------------------------------- */
 
 enum error_type
-read_simple_matrix(FILE *input_stream, struct simple_matrix *matrix)
+read_simple_matrix(FILE *input_stream,
+                   struct simple_matrix *matrix,
+                   enum stream_type source_type)
 {
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input matrix height and width: ");
   r = fscanf(input_stream, "%d %d", &matrix->height, &matrix->width);
   if (r < 2)
     {
@@ -69,15 +79,20 @@ read_simple_matrix(FILE *input_stream, struct simple_matrix *matrix)
   matrix->values = (double *) malloc(matrix->height * matrix->width
                                                     * sizeof(double));
   return read_values(input_stream, matrix->values,
-                     matrix->height * matrix->width);
+                     matrix->height * matrix->width,
+                     source_type);
 }
 
 /* ----------------------------------------------------------- */
 
 enum error_type
-read_square_matrix(FILE *input_stream, struct simple_matrix *matrix)
+read_square_matrix(FILE *input_stream,
+                   struct simple_matrix *matrix,
+                   enum stream_type source_type)
 {
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input matrix size (matrix is square): ");
   r = fscanf(input_stream, "%d", &matrix->height);
   if (r < 1)
     {
@@ -95,7 +110,8 @@ read_square_matrix(FILE *input_stream, struct simple_matrix *matrix)
   matrix->values = (double *) malloc(matrix->height * matrix->width
                                                     * sizeof(double));
   return read_values(input_stream, matrix->values,
-                     matrix->height * matrix->width);
+                     matrix->height * matrix->width,
+                     source_type);
 }
 
 /* ----------------------------------------------------------- */
@@ -103,9 +119,12 @@ read_square_matrix(FILE *input_stream, struct simple_matrix *matrix)
 enum error_type
 read_extended_matrix(FILE *input_stream,
                      struct simple_matrix *matrix,
-                     struct vector *vector)
+                     struct vector *vector,
+                     enum stream_type source_type)
 {
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input matrix size (matrix is square): ");
   r = fscanf(input_stream, "%d", &matrix->height);
   if (r < 1)
     {
@@ -125,6 +144,9 @@ read_extended_matrix(FILE *input_stream,
   vector->size = matrix->height;
   vector->values = (double *) malloc(vector->size * sizeof(double));
 
+  if (source_type == ST_CONSOLE)
+    printf("Input %d values (standard extended matrix notation)",
+           matrix->height * (matrix->height + 1));
   for (int i = 0; i < matrix->height; ++i)
     {
       for (int j = 0; j < matrix->width; ++j)
@@ -154,7 +176,9 @@ read_extended_matrix(FILE *input_stream,
 /* ----------------------------------------------------------- */
 
 enum error_type
-read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
+read_block_matrix(FILE *input_stream,
+                  struct block_matrix *matrix,
+                  enum stream_type source_type)
 {
   if (matrix->block_size < 1)
     {
@@ -163,6 +187,8 @@ read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
     }
 
   int r;
+  if (source_type == ST_CONSOLE)
+      printf("Input matrix size (matrix is square): ");
   r = fscanf(input_stream, "%d", &matrix->size);
   if (r < 1)
     {
@@ -178,8 +204,11 @@ read_block_matrix(FILE *input_stream, struct block_matrix *matrix)
 
   matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
 
+  int N = matrix->size; // for big formulas
+  if (source_type == ST_CONSOLE)
+      printf("Input %d real values: \n", N * N);
+
 #define MAGIC 100500
-  int N = matrix->size;
   int M = matrix->block_size;
   int K = (N / M) + 1;
   int current_index;

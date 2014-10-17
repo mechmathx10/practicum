@@ -12,22 +12,27 @@
 
 /* ----------------------------------------------------------- */
 
-/* lss - linear system solver */
-struct lss_config
+/* mi - matrix inverter */
+struct mi_config
 {
   char *input_filename;
-  int has_input_file;
+  enum stream_type input_stream_type;
+  char *output_filename;
+  enum stream_type output_stream_type;
   int block_size;
 };
 
-static struct lss_config lconfig = {
+static struct mi_config mconfig = {
   .input_filename = (char *) NULL,
-  .has_input_file = 0,
+  .input_stream_type = ST_CONSOLE,
+  .output_filename = (char *) NULL,
+  .output_stream_type = ST_CONSOLE,
   .block_size = 0,
 };
 
 struct option options[] = {
   { .name = "input_file",    .val = 'i',  .has_arg = required_argument },
+  { .name = "output_file",   .val = 'o',  .has_arg = required_argument },
   { .name = "block_size",    .val = 'b',  .has_arg = required_argument },
   { .name = "help",          .val = 'h',  .has_arg = no_argument },
   { .name = NULL },
@@ -36,13 +41,14 @@ struct option options[] = {
 
 static
 void
-print_usage(FILE *out, char *program_name)
+print_usage(FILE *output_stream, char *program_name)
 {
-  fprintf(out, 
+  fprintf(output_stream,
           "Usage: %s [OPTIONS]\n\n"
-          "  --input_file, -c [filename]     deprecated.\n"
-          "  --block_size, -b [size]         matrix block size.\n"
-          "  --help, -h                      print this message\n",
+          "  --input_file,  -i [filename]     input file.\n"
+          "  --output-file, -o [filename]     output file.\n"
+          "  --block_size,  -b [size]         matrix block size.\n"
+          "  --help,        -h                print this message\n",
           program_name);
 }
 
@@ -50,19 +56,23 @@ print_usage(FILE *out, char *program_name)
 
 static
 void
-process_options(int argc, char ** argv)
+process_options(int argc, char **argv)
 {
   int opt;
-  while ((opt = getopt_long(argc, argv, "c:b:h", options, NULL)) != -1)
+  while ((opt = getopt_long(argc, argv, "i:o:b:h", options, NULL)) != -1)
     {
       switch (opt)
         {
-        case 'c':
-          lconfig.input_filename = optarg;
-          lconfig.has_input_file = 0;
+        case 'i':
+          mconfig.input_filename = optarg;
+          mconfig.input_stream_type = ST_FILE;
+          break;
+        case 'o':
+          mconfig.output_filename = optarg;
+          mconfig.output_stream_type = ST_FILE;
           break;
         case 'b':
-          lconfig.block_size = atoi(optarg);
+          mconfig.block_size = atoi(optarg);
           break;
         case 'h':
           print_usage(stdout, argv[0]);
@@ -72,95 +82,57 @@ process_options(int argc, char ** argv)
           exit(1);
         }
     }
-  if (lconfig.block_size < 1)
+  if (mconfig.block_size < 1)
     {
       fprintf(stderr, "Block size is not set or negative and been set to: %d\n",
                       DEFAULT_BLOCK_SIZE);
-      lconfig.block_size = DEFAULT_BLOCK_SIZE;
+      mconfig.block_size = DEFAULT_BLOCK_SIZE;
     }
 }
 
 /* ----------------------------------------------------------- */
 
 int
-main(int argc, char ** argv)
+main(int argc, char **argv)
 {
   process_options(argc, argv);
 
-#if 0
-  struct vector v1, v2;
-  struct simple_matrix m1, m2;
+  FILE *input_stream = NULL;
+  FILE *output_stream = NULL;
+  if (mconfig.input_stream_type == ST_FILE)
+    {
+      input_stream = fopen(mconfig.input_filename, "r");
+      if (! input_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for input\n",
+                  mconfig.input_filename);
+          return ET_FILE_ERROR;
+        }
+    }
+  else // mconfig.input_stream_type == ST_CONSOLE
+    input_stream = stdin;
 
-  FILE *vector_file = fopen("test_vector", "r");
-  if (read_vector(vector_file, &v1) == ET_CORRECT)
-    print_vector(stdout, &v1);
-  fclose(vector_file);
-  DELETE(v1);
+  if (mconfig.output_stream_type == ST_FILE)
+    {
+      output_stream = fopen(mconfig.output_filename, "w");
+      if (! output_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for output\n",
+                  mconfig.output_filename);
+          if (mconfig.input_stream_type == ST_FILE)
+            fclose(input_stream);
+        }
+    }
+  else // mconfig.output_stream_type == ST_CONSOLE
+    output_stream = stdout;
 
-  FILE *matrix_file = fopen("test_matrix", "r");
-  if (read_simple_matrix(matrix_file, &m1) == ET_CORRECT)
-    print_simple_matrix(stdout, &m1);
-  fclose(matrix_file);
-  DELETE(m1);
 
-  FILE *extended_file = fopen("test_extended", "r");
-  if (read_extended_matrix(extended_file, &m2, &v2) == ET_CORRECT)
-    print_extended_matrix(stdout, &m2, &v2);
-  fclose(extended_file);
-  DELETE(m2);
-  DELETE(v2);
-#endif
 
-#if 0
-  struct block_matrix bm;
-  FILE *block_file = fopen("test_block", "r");
-  bm.block_size = lconfig.block_size;
-  if (read_block_matrix(block_file, &bm) == ET_CORRECT)
-      print_block_matrix(stdout, &bm);
-
-  block b;
-  b.values = malloc(SQUARE_DOUB(lconfig.block_size));
-  get_block(&bm, &b, 0, 0);
-  print_simple_matrix(stdout, &b);
-  DELETE(b);
-
-  fclose(block_file);
-  DELETE(bm);
-
-  block b2;
-  make_unit_block(&b2, 10);
-  print_simple_matrix(stdout, &b2);
-  DELETE(b2);
-#endif
-
-  block b3, b4;
-  make_unit_block(&b3, 2);
-  make_unit_block(&b4, 2);
-  print_simple_matrix(stdout, &b3);
-  print_simple_matrix(stdout, &b4);
-  b3.values[0] = 2;
-  b3.values[1] = 1;
-  inverse_block(&b3, &b4);
-  print_simple_matrix(stdout, &b3);
-  print_simple_matrix(stdout, &b4);
-
-  block b5;
-  make_zero_block(&b5, 2);
-  b3.values[0] = 2;
-  b3.values[1] = 1;
-  multiply_blocks(&b3, &b4, &b5);
-  print_simple_matrix(stdout, &b3);
-  print_simple_matrix(stdout, &b4);
-  print_simple_matrix(stdout, &b5);
-
-  print_simple_matrix_m(stdout, &b3, "hello");
-  printf("norm = %lf\n", simple_matrix_norm(&b3));
-
-  DELETE(b3);
-  DELETE(b4);
-  DELETE(b5);
-
-  return 0;
+  if (mconfig.input_stream_type == ST_FILE)
+    fclose(input_stream);
+  if (mconfig.output_stream_type == ST_FILE)
+    fclose(output_stream);
+  return ET_CORRECT;
 }
 
 /* ----------------------------------------------------------- */
