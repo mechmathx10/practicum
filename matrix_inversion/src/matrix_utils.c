@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <math.h>
 
 /* ----------------------------------------------------------- */
 
@@ -104,6 +104,35 @@ multiply_blocks(const block * const first_matrix,
         }
     }
   return ET_CORRECT;
+}
+
+/* ----------------------------------------------------------- */
+
+double
+simple_matrix_norm(const block * const matrix)
+{
+  double current_max = 0;
+  double current_sum;
+  double *current_ptr = matrix->values;
+  for (int i = 0; i < matrix->height; ++i)
+    {
+      current_sum = 0;
+      for (int j = 0; j < matrix->width; ++j)
+        current_sum += fabs(current_ptr[j]);
+      if (current_sum > current_max)
+        current_max = current_sum;
+      current_ptr += matrix->width;
+    }
+  return current_max;
+}
+
+/* ----------------------------------------------------------- */
+
+double
+block_matrix_norm(const struct block_matrix * const matrix)
+{
+  UNUSED(matrix);
+  return 0;
 }
 
 /* ----------------------------------------------------------- */

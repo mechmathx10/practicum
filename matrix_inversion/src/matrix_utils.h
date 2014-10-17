@@ -25,6 +25,12 @@ inverse_block(block *, block *);
 enum error_type
 multiply_blocks(const block * const, const block * const, block *);
 
+double
+simple_matrix_norm(const block * const);
+
+double
+block_matrix_norm(const struct block_matrix * const);
+
 /* ----------------------------------------------------------- */
 
 #endif

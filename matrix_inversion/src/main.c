@@ -153,6 +153,10 @@ main(int argc, char ** argv)
   print_simple_matrix(stdout, &b4);
   print_simple_matrix(stdout, &b5);
 
+  printf("\n");
+  print_simple_matrix(stdout, &b3);
+  printf("norm = %lf\n", simple_matrix_norm(&b3));
+
   return 0;
 }
 
