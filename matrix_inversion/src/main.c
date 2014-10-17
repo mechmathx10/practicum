@@ -153,9 +153,12 @@ main(int argc, char ** argv)
   print_simple_matrix(stdout, &b4);
   print_simple_matrix(stdout, &b5);
 
-  printf("\n");
-  print_simple_matrix(stdout, &b3);
+  print_simple_matrix_m(stdout, &b3, "hello");
   printf("norm = %lf\n", simple_matrix_norm(&b3));
+
+  DELETE(b3);
+  DELETE(b4);
+  DELETE(b5);
 
   return 0;
 }
