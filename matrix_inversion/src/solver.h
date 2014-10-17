@@ -2,8 +2,6 @@
 #define SOLVER_H
 
 #include "datatypes.h"
-#include "block_utils.h"
-#include "matrix_utils.h"
 
 /* ----------------------------------------------------------- */
 

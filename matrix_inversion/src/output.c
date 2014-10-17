@@ -1,7 +1,7 @@
 #include "output.h"
 #include "block_utils.h"
 
-#define EXTENDED_OUTPUT 0
+#define EXTENDED_OUTPUT 1
 
 /* ----------------------------------------------------------- */
 

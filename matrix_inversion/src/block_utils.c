@@ -63,4 +63,3 @@ put_block(struct block_matrix *matrix, block *buffer, int i, int j)
 }
 
 /* ----------------------------------------------------------- */
-

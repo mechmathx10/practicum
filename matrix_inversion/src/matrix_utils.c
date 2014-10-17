@@ -1,4 +1,5 @@
 #include "matrix_utils.h"
+#include "block_utils.h"
 #include "output.h"
 
 #include <string.h>
@@ -134,6 +135,33 @@ block_matrix_norm(const struct block_matrix * const matrix)
 {
   UNUSED(matrix);
   return 0;
+}
+
+/* ----------------------------------------------------------- */
+
+void
+make_zero_block_matrix(struct block_matrix *matrix, const int size)
+{
+  matrix->size = size;
+  matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
+  memset(matrix->values, 0, SQUARE_DOUB(size));
+}
+
+/* ----------------------------------------------------------- */
+
+void
+make_unit_block_matrix(struct block_matrix *matrix, const int size)
+{
+  make_zero_block_matrix(matrix, size);
+  int N = size;
+  int M = matrix->block_size;
+  int block_count = N / M;
+  for (int i = 0; i < block_count; ++i)
+    {
+      double *current_ptr = get_block_start(matrix, i, i);
+      for (int j = 0; j < M; ++j)
+        current_ptr[j * (M + 1)] = 1;
+    }
 }
 
 /* ----------------------------------------------------------- */

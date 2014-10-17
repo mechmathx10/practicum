@@ -57,6 +57,8 @@ struct block_matrix
   double *values;
   int size;
   int block_size;
+  // int linear_block_count;
+  // int residue;
 };
 
 

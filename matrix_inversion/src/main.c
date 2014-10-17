@@ -192,9 +192,9 @@ main(int argc, char **argv)
 
 #define INPUT_SECTION
   struct block_matrix matrix;
-  // struct block_matrix result;
+  struct block_matrix result;
   matrix.block_size = mconfig.block_size;
-  // result.block_size = mconfig.block_size;
+  result.block_size = mconfig.block_size;
   enum input_type in_type = mconfig.input_stream_type;
 
   if (mconfig.input_stream_type == IT_GENERATE)
@@ -224,16 +224,25 @@ main(int argc, char **argv)
     }
   if (mconfig.input_stream_type == IT_FILE)
     fclose(input_stream);
+
+  make_unit_block_matrix(&result, matrix.size);
 #ifdef _DEBUG_
   print_block_matrix_m(output_stream, &matrix, "Source matrix");
+  print_block_matrix_m(output_stream, &result, "Result matrix");
 #endif
 
 #undef INPUT_SECTION
 
-#define CLOSE_FILE_SECTION
+#define INVERSE_SECTION
+
+#undef INVERSE_SECTION
+
+#define RESOURSE_FREE_SECTION
+  DELETE(matrix);
+  DELETE(result);
   if (mconfig.output_stream_type == OT_FILE)
     fclose(output_stream);
-#undef CLOSE_FILE_SECTION
+#undef RESOURSE_FREE_SECTION
   return ET_CORRECT;
 }
 
