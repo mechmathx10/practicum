@@ -9,7 +9,7 @@ SRCDIR=src
 EXEDIR=exe
 TEXDIR=latex
 
-OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o matrix_utils.o solver.o)
+OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o main.o block_utils.o matrix_utils.o solver.o permutation.o)
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
 EXECUTABLE=$(addprefix $(EXEDIR)/, main)
 
@@ -29,6 +29,9 @@ $(OBJDIR)/output.o : $(SRCDIR)/output.h $(SRCDIR)/output.c $(NOIST_HEADERS)
 
 $(OBJDIR)/solver.o : $(SRCDIR)/solver.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/solver.c -o $(OBJDIR)/solver.o $(CFLAGS) $(CPPFLAGS)
+
+$(OBJDIR)/permutation.o : $(SRCDIR)/permutation.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/permutation.c -o $(OBJDIR)/permutation.o $(CFLAGS) $(CPPFLAGS)
 
 $(OBJDIR)/main.o : $(SRCDIR)/main.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o $(CFLAGS) $(CPPFLAGS)
