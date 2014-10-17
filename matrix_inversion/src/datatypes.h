@@ -21,11 +21,20 @@ enum error_type
 };
 
 
-enum stream_type
+enum input_type
 {
-  ST_FILE = 0,
-  ST_CONSOLE = 1,
+  IT_FILE = 0,
+  IT_CONSOLE = 1,
+  IT_GENERATE = 2,
 };
+
+
+enum output_type
+{
+  OT_FILE = 0,
+  OT_CONSOLE = 1,
+};
+
 
 
 struct vector
