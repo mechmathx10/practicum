@@ -145,6 +145,8 @@ make_zero_block_matrix(struct block_matrix *matrix, const int size)
   matrix->size = size;
   matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
   memset(matrix->values, 0, SQUARE_DOUB(size));
+  matrix->full_block_count = matrix->size / matrix->block_size;
+  matrix->residue = matrix->size % matrix->block_size;
 }
 
 /* ----------------------------------------------------------- */

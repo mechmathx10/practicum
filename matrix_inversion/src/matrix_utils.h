@@ -43,4 +43,4 @@ make_unit_block_matrix(struct block_matrix *, const int);
 
 /* ----------------------------------------------------------- */
 
-#endif
+#endif // MATRIX_UTILS_H

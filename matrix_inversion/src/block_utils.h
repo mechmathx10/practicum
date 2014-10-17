@@ -29,4 +29,4 @@ put_block(struct block_matrix *, block *, int, int);
 
 /* ----------------------------------------------------------- */
 
-#endif
+#endif // BLOCK_UTILS_H

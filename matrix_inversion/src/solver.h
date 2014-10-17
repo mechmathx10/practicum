@@ -5,10 +5,23 @@
 
 /* ----------------------------------------------------------- */
 
+void
+swap_block_columns(struct block_matrix *, block *, const int, const int);
+
+
+void
+swap_block_rows(struct block_matrix *, block *, const int, const int);
+
+
+int
+find_row_main_block(const struct block_matrix * const,
+                    block *, block *, const int);
+
+
 /* we assume that both matrices are already initialized */
-void inverse_block_matrix(struct block_matrix *matrix,
-                          struct block_matrix *result);
+void
+inverse_block_matrix(struct block_matrix *, struct block_matrix *);
 
 /* ----------------------------------------------------------- */
 
-#endif
+#endif // SOLVER_H

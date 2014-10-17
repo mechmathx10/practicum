@@ -232,6 +232,9 @@ read_block_matrix(FILE *input_stream,
         }
     }
 #undef MAGIC
+  matrix->full_block_count = K - 1;
+  matrix->residue = N % M;
+
   return ET_CORRECT;
 }
 
@@ -277,6 +280,9 @@ generate_block_matrix(struct block_matrix *matrix, double (*f)(int, int))
           matrix->values[current_index] = f(i, j);
         }
     }
+  matrix->full_block_count = K - 1;
+  matrix->residue = N % M;
+
   return ET_CORRECT;
 }
 

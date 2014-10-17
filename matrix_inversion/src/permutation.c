@@ -1,25 +1,51 @@
 #include "permutation.h"
-#include "datatypes.h"
+
+#include <stdlib.h>
 
 /* ----------------------------------------------------------- */
 
-// TODO : implement add_transposition
+void
+init_permutation(struct permutation *permutation, const int size)
+{
+  permutation->size = size;
+  permutation->values = (int *) malloc(size * sizeof(double));
+  for (int i = 0; i < size; ++i)
+    permutation->values[i] = i;
+}
+
+/* ----------------------------------------------------------- */
+
+void
+print_permutation(FILE *output_stream,
+                  const struct permutation * const permutation)
+{
+  for (int i = 0; i < permutation->size; ++i)
+    fprintf(output_stream, "%d\t", i);
+  fprintf(output_stream, "\n");
+  for (int i = 0; i < permutation->size; ++i)
+    fprintf(output_stream, "%d\t", permutation->values[i]);
+  fprintf(output_stream, "\n");
+}
+
+/* ----------------------------------------------------------- */
+
 void
 add_transposition(struct permutation *permutation, int i, int j)
 {
-  UNUSED(permutation);
-  UNUSED(i);
-  UNUSED(j);
+  int temp = permutation->values[i];
+  permutation->values[i] = permutation->values[j];
+  permutation->values[j] = temp;
 }
 
 /* ----------------------------------------------------------- */
 
 // TODO : implement get_inversed
 void
-get_inversed(struct permutation *permutation, struct permutation *inversed)
+get_inversed(const struct permutation * const permutation,
+             struct permutation *inversed)
 {
-  UNUSED(permutation);
-  UNUSED(inversed);
+  for (int i = 0; i < permutation->size; ++i)
+    inversed->values[permutation->values[i]] = i;
 }
 
 /* ----------------------------------------------------------- */

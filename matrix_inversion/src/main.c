@@ -7,8 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <time.h>
 
-#define _DEBUG_ 1
+#define _DEBUG_ 0
 
 #define DEFAULT_BLOCK_SIZE  3
 #define DEFAULT_MATRIX_SIZE 10
@@ -230,11 +231,13 @@ main(int argc, char **argv)
   print_block_matrix_m(output_stream, &matrix, "Source matrix");
   print_block_matrix_m(output_stream, &result, "Result matrix");
 #endif
-
 #undef INPUT_SECTION
 
 #define INVERSE_SECTION
-
+  time_t t = clock();
+  inverse_block_matrix(&matrix, &result);
+  t = clock() - t;
+  printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
 #undef INVERSE_SECTION
 
 #define RESOURSE_FREE_SECTION
