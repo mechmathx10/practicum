@@ -9,7 +9,7 @@ if [ "$1" == "clean" ]
 fi;
 
 make exe &&
-echo "---------- STARTED -----------" && 
+echo "---------- STARTED -----------" &&
 cd exe/ &&
 ./main $@ &&
 cd .. &&

@@ -151,7 +151,7 @@ read_extended_matrix(FILE *input_stream,
     {
       for (int j = 0; j < matrix->width; ++j)
         {
-          r = fscanf(input_stream, "%lf", 
+          r = fscanf(input_stream, "%lf",
                                    &matrix->values[i * matrix->height + j]);
           if (r < 1)
             {

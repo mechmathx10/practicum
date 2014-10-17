@@ -24,16 +24,16 @@
 
 Опишем стандартный (не блочный) метод Жордана-Гаусса с выбором главного элемента по строке.
 Пусть $A$ --- квадратная матрица порядка $n$. Припишем к ней справа единичную матрицу. Получим в результате матрицу порядка $n\times 2n$ обозначим через $(A_0|B_0) = (A|E)$, а впоследствии получающиеся из нее после матрицы через $(A_i|B_i)$. Элементы матриц в дальнейшем обозначаются через $a_{ikl}$, где $i$ --- номер шага алгоритма, $k$ --- номер строки, $l$ --- номер столбца.
-\[ 
-(A_0|B_0) = \left( 
+\[
+(A_0|B_0) = \left(
 \begin{array} {rrrrr|rrrrr}
-a_{11} & a_{12} & \ldots & a_{1,n-1} & a_{1n} & 1 & 0 & \ldots & 0 & 0 \\ 
-a_{21} & a_{22} & \ldots & a_{2,n-1} & a_{2n} & 0 & 1 & \ldots & 0 & 0 \\ 
-\ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \\ 
+a_{11} & a_{12} & \ldots & a_{1,n-1} & a_{1n} & 1 & 0 & \ldots & 0 & 0 \\
+a_{21} & a_{22} & \ldots & a_{2,n-1} & a_{2n} & 0 & 1 & \ldots & 0 & 0 \\
+\ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \\
 a_{n-1,1} & a_{n-1,2} & \ldots & a_{n-1,n-1} & a_{n-1,n} & 0 & 0 & \ldots & 1 & 0 \\
-a_{n1} & a_{n2} & \ldots & a_{n,n-1} & a_{nn} & 0 & 0 & \ldots & 0 & 1 \\ 
-\end{array} 
-\right) 
+a_{n1} & a_{n2} & \ldots & a_{n,n-1} & a_{nn} & 0 & 0 & \ldots & 0 & 1 \\
+\end{array}
+\right)
 \]
 
 В алгоритме также будут использоваться перестановки столбцов матрицы. Для того, чтобы из результата преобразований корректно получить обратную матрицу, эти перестановки нужно запоминать. Начальная перестановка --- тождественная.
@@ -52,7 +52,7 @@ $$ \sigma_i = (i,j_i) \cdot \sigma_{i,j_i} $$
 $$ a_{ikl} = \tilde{a}_{i-1,kl},\quad k=1..i $$
 $$ b_{ikl} = \tilde{b}_{i-1,kl},\quad k=1..i $$
 $$ a_{ikl} = \tilde{a}_{i-1,kl} - \tilde{a}_{i-1,il}\tilde{a}_{i-1,ki},\quad l=i+1..n $$
-$$ b_{ikl} = \tilde{b}_{i-1,kl} - \tilde{b}_{i-1,il}\tilde{b}_{i-1,ki},\quad l=i+1..n $$ 
+$$ b_{ikl} = \tilde{b}_{i-1,kl} - \tilde{b}_{i-1,il}\tilde{b}_{i-1,ki},\quad l=i+1..n $$
 
 \end{enumerate}
 
@@ -70,20 +70,20 @@ $$ \tilde{B}_n = A^{-1} $$
 $$ n = qm + r,\quad q\in \mathbb{Z}_+,\quad 0\leq r\leq m-1 $$
 Интерес представляет случай $q > 0$. Разобьем матрицу $A$ на блоки размеров $m\times m$, начиная с левого верхнего угла. Оставшиеся справа и снизу элементы попадут в блоки меньшего размера. Справа к матрице $A$, как и в исходном методе, припишем единичную матрицу, для нее проведем такое же разбиение (заметим, что все блоки матрицы $E$ --- либо единичные матрицы, либо нулевые). Получим следующий вид ($0^{x\times y}$ обозначает нулевую матрицу порядка $x \times y$):
 
-\[ 
-(A|B) = \left( 
+\[
+(A|B) = \left(
 \begin{array} {rrrrr|rrrrr}
-A_{11}^{m\times m} & A_{12}^{m\times m} & \ldots & A_{1q}^{m\times m} & A_{1,q+1}^{m\times r} 
+A_{11}^{m\times m} & A_{12}^{m\times m} & \ldots & A_{1q}^{m\times m} & A_{1,q+1}^{m\times r}
 & E^{m\times m} & 0^{m\times m} & \ldots & 0^{m\times m} & 0^{m\times r} \\
-A_{21}^{m\times m} & A_{22}^{m\times m} & \ldots & A_{2q}^{m\times m} & A_{2,q+1}^{m\times r} 
+A_{21}^{m\times m} & A_{22}^{m\times m} & \ldots & A_{2q}^{m\times m} & A_{2,q+1}^{m\times r}
 & 0^{m\times m} & E^{m\times m} & \ldots & 0^{m\times m} & 0^{m\times r} \\
 \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \\
-A_{q1}^{m\times m} & A_{q2}^{m\times m} & \ldots & A_{qq}^{m\times m} & A_{q,q+1}^{m\times r}  
+A_{q1}^{m\times m} & A_{q2}^{m\times m} & \ldots & A_{qq}^{m\times m} & A_{q,q+1}^{m\times r}
 & 0^{m\times m} & 0^{m\times m} & \ldots & E^{m\times m} & 0^{m\times r} \\
-A_{q+1,1}^{r\times m} & A_{q+1,2}^{r\times m} & \ldots & A_{q+1,q}^{r\times m} & A_{q,q+1}^{r\times r}  
+A_{q+1,1}^{r\times m} & A_{q+1,2}^{r\times m} & \ldots & A_{q+1,q}^{r\times m} & A_{q,q+1}^{r\times r}
 & 0^{r\times m} & 0^{r\times m} & \ldots & 0^{r\times m} & E^{r\times r} \\
-\end{array} 
-\right) 
+\end{array}
+\right)
 \]
 
 \subsection{Обозначения}

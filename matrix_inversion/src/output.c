@@ -72,7 +72,7 @@ print_extended_matrix(FILE *output_stream,
       for (int j = 0; j < matrix->width; ++j)
         fprintf(output_stream, "%f ", matrix->values[i * matrix->height + j]);
       fprintf(output_stream, " | %f\n", vector->values[i]);
-    }  
+    }
 }
 
 /* ----------------------------------------------------------- */

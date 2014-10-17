@@ -22,7 +22,7 @@ int
 get_block_height(const struct block_matrix *matrix, int i, int j)
 {
   UNUSED(j);
-  return i == matrix->size / matrix->block_size 
+  return i == matrix->size / matrix->block_size
                 ? matrix->size % matrix->block_size
                 : matrix->block_size;
 }
@@ -34,7 +34,7 @@ int
 get_block_width(const struct block_matrix *matrix, int i, int j)
 {
   UNUSED(i);
-  return j == matrix->size / matrix->block_size 
+  return j == matrix->size / matrix->block_size
                 ? matrix->size % matrix->block_size
                 : matrix->block_size;
 }
