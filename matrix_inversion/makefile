@@ -12,8 +12,9 @@ TESTDIR=test
 TESTSRCDIR=src/test
 
 OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o block_utils.o matrix_utils.o solver.o permutation.o)
+TESTOBJECTS=$(addprefix $(OBJDIR)/, test_solver.o)
 EXEOBJECT=$(addprefix $(OBJDIR)/, main.o)
-TESTOBJECT=$(addprefix $(OBJDIR)/, test_main.o)
+TESTEXEOBJECT=$(addprefix $(OBJDIR)/, test_main.o)
 
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
 
@@ -40,7 +41,10 @@ $(OBJDIR)/solver.o : $(SRCDIR)/solver.c $(NOIST_HEADERS)
 $(OBJDIR)/permutation.o : $(SRCDIR)/permutation.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/permutation.c -o $(OBJDIR)/permutation.o $(CFLAGS) $(CPPFLAGS)
 
-$(TESTOBJECT) : $(TESTSRCDIR)/test_main.c $(NOIST_HEADERS)
+$(OBJDIR)/test_solver.o : $(TESTSRCDIR)/test_solver.c $(NOIST_HEADERS)
+	$(CC) -c $(TESTSRCDIR)/test_solver.c -o $(OBJDIR)/test_solver.o $(CFLAGS) $(CPPFLAGS)
+
+$(TESTEXEOBJECT) : $(TESTSRCDIR)/test_main.c $(NOIST_HEADERS)
 	$(CC) -c $(TESTSRCDIR)/test_main.c -o $(OBJDIR)/test_main.o $(CFLAGS) $(CPPFLAGS)
 
 $(EXEOBJECT) : $(SRCDIR)/main.c $(NOIST_HEADERS)
@@ -62,5 +66,5 @@ tex:
 exe: $(OBJECTS) $(EXEOBJECT)
 	$(CC) $(OBJECTS) $(EXEOBJECT) -o $(EXECUTABLE) $(CFLAGS) $(CPPFLAGS)
 
-test: $(OBJECTS) $(TESTOBJECT)
-	$(CC) $(OBJECTS) $(TESTOBJECT) -o $(TESTEXE) $(CFLAGS) $(CPPFLAGS)
+test: $(OBJECTS) $(TESTEXEOBJECT) $(TESTOBJECTS)
+	$(CC) $(OBJECTS) $(TESTOBJECTS) $(TESTEXEOBJECT) -o $(TESTEXE) $(CFLAGS) $(CPPFLAGS)
