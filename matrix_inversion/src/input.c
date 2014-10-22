@@ -5,7 +5,6 @@
 
 /* ----------------------------------------------------------- */
 
-static
 enum error_type
 read_values(FILE *input_stream, double *values,
             int count, enum input_type source_type)

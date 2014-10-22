@@ -11,6 +11,27 @@
 
 inline
 void
+set_zero_block(block *matrix)
+{
+  memset(matrix->values, 0, SQUARE_DOUB(matrix->height));
+}
+
+/* ----------------------------------------------------------- */
+
+inline
+void
+set_unit_block(block *matrix)
+{
+  const int size = matrix->height;
+  memset(matrix->values, 0, SQUARE_DOUB(size));
+  for (int i = 0; i < size * size; ++i)
+    matrix->values[i * (size + 1)] = 1;
+}
+
+/* ----------------------------------------------------------- */
+
+inline
+void
 make_zero_block(block *matrix, const int size)
 {
   matrix->height = size;
@@ -28,6 +49,16 @@ make_unit_block(block *matrix, const int size)
   make_zero_block(matrix, size);
   for (int i = 0; i < size; ++i)
     matrix->values[i * (size + 1)] = 1;
+}
+
+/* ----------------------------------------------------------- */
+
+void
+substract_block(block *minuend, const block * const subtrahend)
+{
+  const int count = minuend->height * minuend->width;
+  for (int i = 0; i < count; ++i)
+      minuend->values[i] -= subtrahend->values[i];
 }
 
 /* ----------------------------------------------------------- */

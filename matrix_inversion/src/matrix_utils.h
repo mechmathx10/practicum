@@ -5,6 +5,18 @@
 
 /* ----------------------------------------------------------- */
 
+// does not allocate memory for block's values
+inline
+void
+set_zero_block(block *);
+
+
+// does not allocate memory for block's values
+inline
+void
+set_unit_block(block *);
+
+
 // allocates memory for block's values
 inline
 void
@@ -15,6 +27,11 @@ make_zero_block(block *, const int);
 inline
 void
 make_unit_block(block *, const int);
+
+
+// first -= second
+void
+substract_block(block *, const block * const);
 
 
 // we assume that the both args are square blocks of the same size

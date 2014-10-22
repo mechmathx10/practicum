@@ -7,6 +7,11 @@
 
 /* ----------------------------------------------------------- */
 
+
+enum error_type
+read_values(FILE *, double *, int, enum input_type);
+
+
 enum error_type
 read_vector(FILE *, struct vector *, enum input_type);
 

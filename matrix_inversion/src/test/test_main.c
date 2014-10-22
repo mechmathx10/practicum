@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <getopt.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -117,28 +118,55 @@ main(int argc, char **argv)
 
   struct simple_matrix matrix;
   struct simple_matrix result;
+  struct simple_matrix saved_matrix;
 
   enum input_type in_type = tconfig.input_stream_type;
   current_state = read_square_matrix(input_stream, &matrix, in_type);
-  if (tconfig.input_stream_type == IT_FILE)
-    fclose(input_stream);
   if (current_state != ET_CORRECT)
     {
       fprintf(stderr, "Error reading matrix");
       if (tconfig.output_stream_type == OT_FILE)
         fclose(output_stream);
+      if (tconfig.input_stream_type == IT_FILE)
+        fclose(input_stream);
       return ET_INPUT_ERROR;
     }
-  make_unit_block(&result, matrix.height);
+  if (tconfig.input_stream_type == IT_FILE)
+    fclose(input_stream);
+  const int size = matrix.height;
+  make_unit_block(&result, size);
+  saved_matrix.values = (double *) malloc(SQUARE_DOUB(size));
+  saved_matrix.height = size;
+  saved_matrix.width = size;
+  memcpy(saved_matrix.values, matrix.values, SQUARE_DOUB(size));
 
   time_t t = clock();
-  inverse_matrix(&matrix, &result);
+  current_state = inverse_matrix(&matrix, &result);
+  if (current_state != ET_CORRECT)
+    {
+      fprintf(stderr, "Error inversing matrix.\n");
+      DELETE(matrix);
+      DELETE(result);
+      DELETE(saved_matrix);
+      if (tconfig.output_stream_type == OT_FILE)
+        fclose(output_stream);
+      return current_state;
+    }
   t = clock() - t;
   printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
-  print_simple_matrix(output_stream, &result);
+  print_simple_matrix_m(output_stream, &result, "A^-1");
+
+  memcpy(matrix.values, saved_matrix.values, SQUARE_DOUB(size));
+  print_simple_matrix_m(output_stream, &matrix, "A");
+  multiply_blocks(&matrix, &result, &saved_matrix);
+  print_simple_matrix_m(output_stream, &saved_matrix, "A * A^-1");
+  for (int i = 0; i < size; ++i)
+    saved_matrix.values[i * (size + 1)] -= 1;
+  printf("|| A*A^-1 - E|| = %le\n", simple_matrix_norm(&saved_matrix));
 
   DELETE(matrix);
   DELETE(result);
+  DELETE(saved_matrix);
   if (tconfig.output_stream_type == OT_FILE)
     fclose(output_stream);
   return ET_CORRECT;
