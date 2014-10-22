@@ -37,8 +37,6 @@ inverse_block(block *matrix, block *result)
 {
   int n = matrix->height;
 
-  printf("started\n");
-
   memset(result->values, 0, SQUARE_DOUB(n));
   for (int i = 0; i < n; ++i)
     result->values[i * (n + 1)] = 1;
@@ -52,16 +50,12 @@ inverse_block(block *matrix, block *result)
       for (int j = i; j < n; ++j)
         {
           matrix->values[i * n + j] /= cur_elem;
-        }
-      for (int j = 0; j < n; ++j)
-        {
           result->values[i * n + j] /= cur_elem;
         }
       print_simple_matrix(stdout, matrix);
       print_simple_matrix(stdout, result);
       for (int l = 0; l < n; ++l)
         {
-          printf("started %d row\n", l);
           if (l == i)
             continue;
           cur_row_elem = matrix->values[l * n + i];

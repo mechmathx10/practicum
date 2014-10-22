@@ -1,3 +1,4 @@
+#include "test_solver.h"
 #include "../datatypes.h"
 #include "../input.h"
 #include "../output.h"
@@ -6,6 +7,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* ----------------------------------------------------------- */
 
@@ -129,8 +131,15 @@ main(int argc, char **argv)
     }
   make_unit_block(&result, matrix.height);
 
-  print_simple_matrix_m(output_stream, &matrix, "Start: source matrix");
-  print_simple_matrix_m(output_stream, &result, "Start: inversed matrix");
+  time_t t = clock();
+  inverse_matrix(&matrix, &result);
+  t = clock() - t;
+  printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
+  print_simple_matrix(output_stream, &result);
 
+  DELETE(matrix);
+  DELETE(result);
+  if (tconfig.output_stream_type == OT_FILE)
+    fclose(output_stream);
   return ET_CORRECT;
 }

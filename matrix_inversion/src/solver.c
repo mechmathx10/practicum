@@ -35,8 +35,8 @@ void swap_block_rows(struct block_matrix *matrix, block *buffer,
   for (int k = 0; k < matrix->full_block_count; ++k)
     {
       get_block(matrix, buffer, i, k);
-      memcpy((void *)get_block_start(matrix, i, k),
-             (void *)get_block_start(matrix, j, k),
+      memcpy((void *) get_block_start(matrix, i, k),
+             (void *) get_block_start(matrix, j, k),
              SQUARE_DOUB(matrix->block_size));
       put_block(matrix, buffer, j, k);
     }
