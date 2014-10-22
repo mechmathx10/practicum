@@ -52,6 +52,11 @@ struct simple_matrix
 };
 
 
+// Correct initialization ways:
+//   make_zero_block_matrix (matrix_utils)
+//   make_unit_block_matrix (matrix_utils)
+//   read_block_matrix      (input)
+//   generate_block_matrix  (input)
 struct block_matrix
 {
   double *values;

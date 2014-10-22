@@ -192,3 +192,26 @@ make_unit_block_matrix(struct block_matrix *matrix, const int size)
 }
 
 /* ----------------------------------------------------------- */
+
+void
+substract_unit_block_matrix(struct block_matrix *matrix)
+{
+  double *cur_block_ptr;
+  const int block_size = matrix->block_size;
+  for (int i = 0; i < matrix->full_block_count; ++i)
+    {
+      cur_block_ptr = get_block_start(matrix, i, i);
+      for (int j = 0; j < block_size; ++j)
+          cur_block_ptr[j * (block_size + 1)] -= 1;
+    }
+  if (matrix->residue > 0)
+    {
+      cur_block_ptr = cur_block_ptr = get_block_start(matrix,
+                                                      matrix->full_block_count,
+                                                      matrix->full_block_count);
+      for (int j = 0; j < matrix->residue; ++j)
+        cur_block_ptr[j * (matrix->residue + 1)] -= 1;
+    }
+}
+
+/* ----------------------------------------------------------- */

@@ -58,6 +58,10 @@ make_zero_block_matrix(struct block_matrix *, const int);
 void
 make_unit_block_matrix(struct block_matrix *, const int);
 
+
+void
+substract_unit_block_matrix(struct block_matrix *);
+
 /* ----------------------------------------------------------- */
 
 #endif // MATRIX_UTILS_H
