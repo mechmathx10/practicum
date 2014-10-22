@@ -1,4 +1,4 @@
-# makefile for linear system problem
+# makefile for matrix inversion problem
 
 CC=gcc
 CFLAGS=-g -O3 -std=gnu99
@@ -21,7 +21,9 @@ NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
 EXECUTABLE=$(addprefix $(EXEDIR)/, main)
 TESTEXE=$(addprefix $(TESTDIR)/, main)
 
-all : tex exe test
+TEXCOMMAND=pdflatex -interaction=nonstopmode -output-directory $(TEXDIR) $(TEXDIR)/report.tex > /dev/null
+
+all : test exe tex
 
 $(OBJDIR)/block_utils.o : $(SRCDIR)/block_utils.h $(SRCDIR)/block_utils.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/block_utils.c -o $(OBJDIR)/block_utils.o $(CFLAGS) $(CPPFLAGS)
@@ -60,11 +62,19 @@ clean:
 	@ find $(TEXDIR)/ -type f -not -name "*.tex" -not -name "*.pdf" -exec rm -fv {} \;
 	@ find . -maxdepth 0 -type f -not -name "(README|makefile|run)" -exec rm -fv {} \;
 
-tex:
-	pdflatex -output-directory $(TEXDIR) $(TEXDIR)/report.tex
+tex: $(TEXDIR)/report.tex
+	@ echo "$(TEXCOMMAND)" ; \
+	$(TEXCOMMAND) ; \
+	if [ $$? = 0 ] ; then \
+		echo -e "\e[0;32mReport compiled: ${TEXDIR}/report.pdf\033[0m"; \
+	else \
+		echo -e "\e[0;31mReport compilation failed\033[0m"; \
+	fi;
 
 exe: $(OBJECTS) $(EXEOBJECT)
 	$(CC) $(OBJECTS) $(EXEOBJECT) -o $(EXECUTABLE) $(CFLAGS) $(CPPFLAGS)
+	@ echo -e "\e[0;32mExecutable compiled: ${EXECUTABLE}\033[0m" ;\
 
 test: $(OBJECTS) $(TESTEXEOBJECT) $(TESTOBJECTS)
 	$(CC) $(OBJECTS) $(TESTOBJECTS) $(TESTEXEOBJECT) -o $(TESTEXE) $(CFLAGS) $(CPPFLAGS)
+	@ echo -e "\e[0;32mTest executable compiled: ${TESTEXE}\033[0m" ;\
