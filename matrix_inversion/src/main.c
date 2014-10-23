@@ -59,14 +59,14 @@ void
 print_usage(FILE *output_stream, char *program_name)
 {
   fprintf(output_stream,
-          "Usage: %s [OPTIONS]\n\n"
+          "Usage: %s [OPTIONS]\n"
           "  --input_file,  -i [filename]     input file.\n"
           "  --output-file, -o [filename]     output file.\n"
           "  --block_size,  -b [size]         matrix block size.\n"
           "  --generate     -g                generate matrix, not input\n"
           "                                   (only size must be given)\n"
           "  --size         -s [size]         matrix size, works with -g.\n"
-          "  --help,        -h                print this message\n",
+          "  --help,        -h                print this message\n\n",
           program_name);
 }
 
@@ -110,7 +110,7 @@ process_options(int argc, char **argv)
   if (mconfig.block_size < 1)
     {
       fprintf(stderr, "Block size is not given or has been given negative "
-                      "and been set to: %d\n",
+                      "and been set to default: %d\n",
                       DEFAULT_BLOCK_SIZE);
       mconfig.block_size = DEFAULT_BLOCK_SIZE;
     }
@@ -132,6 +132,12 @@ process_options(int argc, char **argv)
     {
       if (mconfig.matrix_size_given)
         fprintf(stderr, "Matrix size option has no effect without -g option\n");
+    }
+  if (mconfig.input_stream_type == IT_CONSOLE &&
+      mconfig.output_stream_type == OT_CONSOLE)
+    {
+      printf("Neither input nor output file specified, might be an error.\n");
+      print_usage(stdout, argv[0]);
     }
   return ET_CORRECT;
 }
@@ -204,7 +210,7 @@ main(int argc, char **argv)
       current_state = generate_block_matrix(&matrix, func);
       if (current_state != ET_CORRECT)
         {
-          fprintf(stderr, "Error generating matrix");
+          fprintf(stderr, "Error generating matrix.\n");
           if (mconfig.output_stream_type == OT_FILE)
             fclose(output_stream);
           return ET_ERROR;
@@ -215,7 +221,7 @@ main(int argc, char **argv)
       current_state = read_block_matrix(input_stream, &matrix, in_type);
       if (current_state != ET_CORRECT)
         {
-          fprintf(stderr, "Error reading matrix");
+          fprintf(stderr, "Error reading matrix.\n");
           if (mconfig.input_stream_type == IT_FILE)
             fclose(input_stream);
           if (mconfig.output_stream_type == OT_FILE)

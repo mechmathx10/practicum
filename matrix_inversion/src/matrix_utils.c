@@ -206,9 +206,8 @@ substract_unit_block_matrix(struct block_matrix *matrix)
     }
   if (matrix->residue > 0)
     {
-      cur_block_ptr = cur_block_ptr = get_block_start(matrix,
-                                                      matrix->full_block_count,
-                                                      matrix->full_block_count);
+      cur_block_ptr = get_block_start(matrix, matrix->full_block_count,
+                                              matrix->full_block_count);
       for (int j = 0; j < matrix->residue; ++j)
         cur_block_ptr[j * (matrix->residue + 1)] -= 1;
     }

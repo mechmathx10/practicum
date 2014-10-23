@@ -42,10 +42,10 @@ void
 print_usage(FILE *output_stream, char *program_name)
 {
   fprintf(output_stream,
-          "Usage: %s [OPTIONS]\n\n"
+          "Usage: %s [OPTIONS]\n"
           "  --input_file,  -i [filename]     input file.\n"
           "  --output-file, -o [filename]     output file.\n"
-          "  --help,        -h                print this message\n",
+          "  --help,        -h                print this message\n\n",
           program_name);
 }
 
@@ -75,6 +75,13 @@ process_options(int argc, char **argv)
           exit(1);
         }
     }
+  if (tconfig.input_stream_type == IT_CONSOLE &&
+      tconfig.output_stream_type == OT_CONSOLE)
+    {
+      printf("Neither input nor output file specified, might be an error.\n");
+      print_usage(stdout, argv[0]);
+    }
+
   return ET_CORRECT;
 }
 
@@ -84,7 +91,7 @@ int
 main(int argc, char **argv)
 {
   int current_state = ET_CORRECT;
-  printf("This is a test main function\n");
+  printf("This is a test program\n");
   process_options(argc, argv);
 
   FILE *input_stream = NULL;
@@ -124,7 +131,7 @@ main(int argc, char **argv)
   current_state = read_square_matrix(input_stream, &matrix, in_type);
   if (current_state != ET_CORRECT)
     {
-      fprintf(stderr, "Error reading matrix");
+      fprintf(stderr, "Error reading matrix\n");
       if (tconfig.output_stream_type == OT_FILE)
         fclose(output_stream);
       if (tconfig.input_stream_type == IT_FILE)
@@ -153,7 +160,6 @@ main(int argc, char **argv)
       return current_state;
     }
   t = clock() - t;
-  printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
   print_simple_matrix_m(output_stream, &result, "A^-1");
 
   memcpy(matrix.values, saved_matrix.values, SQUARE_DOUB(size));
@@ -163,6 +169,7 @@ main(int argc, char **argv)
   for (int i = 0; i < size; ++i)
     saved_matrix.values[i * (size + 1)] -= 1;
   printf("|| A*A^-1 - E|| = %le\n", simple_matrix_norm(&saved_matrix));
+  printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
 
   DELETE(matrix);
   DELETE(result);

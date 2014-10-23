@@ -1,7 +1,7 @@
 # makefile for matrix inversion problem
 
 CC=gcc
-CFLAGS=-g -O3 -std=gnu99
+CFLAGS=-g -O3 -std=c99
 CPPFLAGS=-Wall -Wextra -Werror -pedantic -fgnu89-inline
 
 OBJDIR=obj

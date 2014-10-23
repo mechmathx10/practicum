@@ -9,6 +9,8 @@
 
 #define _DEBUG_ 0
 
+#define NOT_FOUND -1
+
 static const double EPS = 1e-15;
 
 /* ----------------------------------------------------------- */
@@ -140,6 +142,13 @@ inverse_matrix(struct simple_matrix *matrix, struct simple_matrix *result)
       printf("STEP %d\n-------------------------------\n", i);
 #endif
       max_elem_index = find_row_main_element(matrix, i);
+      if (max_elem_index == NOT_FOUND)
+        {
+          fprintf(stderr, "Cannot pick main element, matrix is singular.\n");
+          free(buff);
+          DELETE(var_perm);
+          return ET_SINGULAR;
+        }
 #if _DEBUG_
       print_simple_matrix_m(stdout, matrix, "Source matrix");
       print_simple_matrix_m(stdout, result, "Inversed matrix");

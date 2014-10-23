@@ -18,6 +18,7 @@ enum error_type
   ET_INPUT_ERROR = 2,
   ET_ARG_ERROR = 3,
   ET_FILE_ERROR = 4,
+  ET_SINGULAR = 5,
 };
 
 

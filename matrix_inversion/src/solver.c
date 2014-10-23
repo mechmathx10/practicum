@@ -102,29 +102,19 @@ void inverse_block_matrix(struct block_matrix *matrix,
 #endif
 
   const int block_size = matrix->block_size;
-  const int matrix_size = matrix->size;
+  const int size = matrix->size;
   UNUSED(block_size);
-  UNUSED(matrix_size);
+  UNUSED(size);
 
-  struct permutation column_permutation;
-  init_permutation(&column_permutation, matrix->full_block_count);
-  print_permutation(stdout, &column_permutation);
+  struct permutation col_perm;
+  init_permutation(&col_perm, matrix->full_block_count);
+  print_permutation(stdout, &col_perm);
 
-  block block_buffer_1;
-  block block_buffer_2;
-  make_zero_block(&block_buffer_1, block_size);
-  make_zero_block(&block_buffer_2, block_size);
 
-#ifdef _DEBUG_
-  swap_block_columns(matrix, &block_buffer_1, 0, 1);
-  swap_block_rows(result, &block_buffer_1, 0, 1);
-  print_block_matrix_m(stdout, matrix, "Source matrix after permutation");
-  print_block_matrix_m(stdout, result, "Result matrix after permutation");
-#endif
 
-  DELETE(block_buffer_1);
-  DELETE(block_buffer_2);
-  DELETE(column_permutation);
+
+
+  DELETE(col_perm);
 }
 
 /* ----------------------------------------------------------- */
