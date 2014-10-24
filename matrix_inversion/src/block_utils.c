@@ -44,8 +44,8 @@ get_block_width(const struct block_matrix *matrix, int i, int j)
 void
 get_block(const struct block_matrix *matrix, block *buffer, int i, int j)
 {
-  int height = get_block_height(matrix, i, j);
-  int width = get_block_width(matrix, i, j);
+  const int height = get_block_height(matrix, i, j);
+  const int width = get_block_width(matrix, i, j);
   buffer->height = height;
   buffer->width = width;
   memcpy(buffer->values, get_block_start(matrix, i, j),
@@ -57,8 +57,8 @@ get_block(const struct block_matrix *matrix, block *buffer, int i, int j)
 void
 put_block(struct block_matrix *matrix, block *buffer, int i, int j)
 {
-  int height = get_block_height(matrix, i, j);
-  int width = get_block_width(matrix, i, j);
+  const int height = get_block_height(matrix, i, j);
+  const int width = get_block_width(matrix, i, j);
   memcpy(get_block_start(matrix, i, j), buffer->values,
          height * width * sizeof(double));
 }

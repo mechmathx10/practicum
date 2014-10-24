@@ -97,6 +97,7 @@ find_row_main_block(const struct block_matrix * const matrix,
 enum error_type
 inverse_block_matrix(struct block_matrix *matrix, struct block_matrix *result)
 {
+  int current_state;
 #ifdef _DEBUG_
   print_block_matrix_full_m(stdout, matrix, "Start: source matrix");
   print_block_matrix_full_m(stdout, result, "Start: result matrix");
@@ -161,6 +162,9 @@ inverse_block_matrix(struct block_matrix *matrix, struct block_matrix *result)
           get_block(matrix, &buffer_alpha, i, j);
           multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
           put_block(matrix, &buffer_beta, i, j);
+        }
+      for (int j = 0; j < K; ++j)
+        {
           get_block(result, &buffer_alpha, i, j);
           multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
           put_block(result, &buffer_beta, i, j);
@@ -174,21 +178,90 @@ inverse_block_matrix(struct block_matrix *matrix, struct block_matrix *result)
           multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
           put_block(result, &buffer_beta, i, K);
         }
-#if 0
-      for (int l = 0; l < N; ++l)
+
+      for (int l = 0; l < K; ++l)
         {
           if (l == i)
             continue;
-          cur_row_elem = matrix->values[l * N + i];
-          for (int k = 0; k < N; ++k)
+          get_block(matrix, &main_block, l, i);
+          for (int k = 0; k < K; ++k)
             {
-              matrix->values[l * N + k] -=
-                  cur_row_elem * matrix->values[i * N + k];
-              result->values[l * N + k] -=
-                  cur_row_elem * result->values[i * N + k];
+              get_block(matrix, &buffer_inversed, i, k);
+              multiply_blocks(&main_block, &buffer_inversed, &buffer_alpha);
+              get_block(matrix, &buffer_beta, l, k);
+              substract_block(&buffer_beta, &buffer_alpha);
+              put_block(matrix, &buffer_beta, l, k);
+
+              get_block(result, &buffer_inversed, i, k);
+              multiply_blocks(&main_block, &buffer_inversed, &buffer_alpha);
+              get_block(result, &buffer_beta, l, k);
+              substract_block(&buffer_beta, &buffer_alpha);
+              put_block(result, &buffer_beta, l, k);
             }
         }
-#endif
+      if (R != 0)
+        {
+          get_block(matrix, &main_block, K, i);
+          for (int k = 0; k < K; ++k)
+            {
+              get_block(matrix, &buffer_inversed, i, k);
+              multiply_blocks(&main_block, &buffer_inversed, &buffer_alpha);
+              get_block(matrix, &buffer_beta, K, k);
+              substract_block(&buffer_beta, &buffer_alpha);
+              put_block(matrix, &buffer_beta, K, k);
+
+              get_block(result, &buffer_inversed, i, k);
+              multiply_blocks(&main_block, &buffer_inversed, &buffer_alpha);
+              get_block(result, &buffer_beta, K, k);
+              substract_block(&buffer_beta, &buffer_alpha);
+              put_block(result, &buffer_beta, K, k);
+            }
+        }
+    }
+
+  print_block_matrix_full_m(stdout, matrix, "Source matrix");
+  print_block_matrix_full_m(stdout, result, "Inversed matrix");
+
+  get_block(matrix, &main_block, K, K);
+  current_state = inverse_block(&main_block, &buffer_inversed);
+  if (current_state != ET_CORRECT)
+    {
+      fprintf(stderr, "Cannot pick main block, matrix is singular.\n");
+      DELETE(col_perm);
+      DELETE(main_block);
+      DELETE(buffer_alpha);
+      DELETE(buffer_beta);
+      DELETE(buffer_inversed);
+      return ET_SINGULAR;
+    }
+  /*memset(main_block.values, 0, SQUARE_DOUB(R));
+  for (int i = 0; i < R; ++i)
+    main_block.values[i * (R + 1)] = 1;
+  put_block(matrix, &main_block, K, K);*/
+  for (int j = 0; j < K; ++j)
+    {
+      get_block(result, &buffer_alpha, K, j);
+      multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+      put_block(result, &buffer_beta, K, j);
+    }
+  if (R != 0)
+    {
+      get_block(result, &buffer_alpha, K, K);
+      multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+      put_block(result, &buffer_beta, K, K);
+    }
+
+  for (int l = 0; l < K; ++l)
+    {
+      get_block(matrix, &main_block, l, K);
+      for (int k = 0; k < K; ++k)
+        {
+          get_block(result, &buffer_inversed, K, k);
+          multiply_blocks(&main_block, &buffer_inversed, &buffer_alpha);
+          get_block(result, &buffer_beta, l, k);
+          substract_block(&buffer_beta, &buffer_alpha);
+          put_block(result, &buffer_beta, l, k);
+        }
     }
 
   print_block_matrix_full_m(stdout, matrix, "Source matrix");

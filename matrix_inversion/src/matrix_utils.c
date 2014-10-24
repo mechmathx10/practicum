@@ -70,6 +70,8 @@ enum error_type
 inverse_block(block *matrix, block *result)
 {
   int N = matrix->height;
+  result->height = N;
+  result->width = N;
 
   memset(result->values, 0, SQUARE_DOUB(N));
   for (int i = 0; i < N; ++i)
@@ -79,7 +81,6 @@ inverse_block(block *matrix, block *result)
   double cur_row_elem;
   for (int i = 0; i < N; ++i)
     {
-      // TODO: select main element
       cur_elem = matrix->values[i * (N + 1)];
       if (abs(cur_elem) < EPS)
           return ET_SINGULAR;
@@ -98,7 +99,6 @@ inverse_block(block *matrix, block *result)
                   cur_row_elem * matrix->values[i * N + k];
               result->values[l * N + k] -=
                   cur_row_elem * result->values[i * N + k];
-
             }
         }
     }
@@ -115,11 +115,13 @@ multiply_blocks(const block * const first_matrix,
   int m = first_matrix->height;
   int n = first_matrix->width;
   int l = second_matrix->width;
+  memset(result->values, 0, m * l * sizeof(double));
+  result->height = first_matrix->height;
+  result->width = second_matrix->width;
   for (int i = 0; i < m; ++i)
     {
       for (int j = 0; j < l; ++j)
         {
-          result->values[i * l + j] = 0;
           for (int k = 0; k < n; ++k)
             {
               result->values[i * l + j] +=
