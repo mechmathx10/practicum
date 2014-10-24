@@ -62,6 +62,14 @@ make_unit_block_matrix(struct block_matrix *, const int);
 void
 substract_unit_block_matrix(struct block_matrix *);
 
+
+// This function is used for debug only, not optimized at all
+inline
+double
+get_block_matrix_element(const struct block_matrix * const,
+                         const int, const int);
+
+
 /* ----------------------------------------------------------- */
 
 #endif // MATRIX_UTILS_H

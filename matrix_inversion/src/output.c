@@ -1,5 +1,6 @@
 #include "output.h"
 #include "block_utils.h"
+#include "matrix_utils.h"
 
 #define EXTENDED_OUTPUT 1
 
@@ -131,6 +132,36 @@ print_block_matrix_m(FILE *output_stream,
 {
   fprintf(output_stream, "%s\n", message);
   print_block_matrix(output_stream, matrix);
+  fprintf(output_stream, "\n");
+}
+
+/* ----------------------------------------------------------- */
+
+void
+print_block_matrix_full(FILE *output_stream,
+                        const struct block_matrix * const matrix)
+{
+  const int N = matrix->size;
+  for (int i = 0; i < N; ++i)
+    {
+      for (int j = 0; j < N; ++j)
+        {
+          fprintf(output_stream, "%.3f\t",
+                  get_block_matrix_element(matrix, i, j));
+        }
+      fprintf(output_stream, "\n");
+    }
+}
+
+/* ----------------------------------------------------------- */
+
+void
+print_block_matrix_full_m(FILE *output_stream,
+                          const struct block_matrix * const matrix,
+                          const char * const message)
+{
+  fprintf(output_stream, "%s\n", message);
+  print_block_matrix_full(output_stream, matrix);
   fprintf(output_stream, "\n");
 }
 

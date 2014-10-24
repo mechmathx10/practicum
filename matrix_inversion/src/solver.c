@@ -4,13 +4,14 @@
 #include "permutation.h"
 #include "output.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define _DEBUG_ 1
 
 #define NOT_FOUND -1
+
+
 
 /* ----------------------------------------------------------- */
 
@@ -97,8 +98,8 @@ void inverse_block_matrix(struct block_matrix *matrix,
                           struct block_matrix *result)
 {
 #ifdef _DEBUG_
-  print_block_matrix_m(stdout, matrix, "Source matrix");
-  print_block_matrix_m(stdout, result, "Result matrix");
+  print_block_matrix_full_m(stdout, matrix, "Start: source matrix");
+  print_block_matrix_full_m(stdout, result, "Start: result matrix");
 #endif
 
   const int block_size = matrix->block_size;
@@ -109,10 +110,6 @@ void inverse_block_matrix(struct block_matrix *matrix,
   struct permutation col_perm;
   init_permutation(&col_perm, matrix->full_block_count);
   print_permutation(stdout, &col_perm);
-
-
-
-
 
   DELETE(col_perm);
 }

@@ -59,6 +59,18 @@ print_block_matrix_m(FILE *,
                      const char * const);
 
 
+// This function is used for debug only, not optimized at all
+void
+print_block_matrix_full(FILE *,
+                        const struct block_matrix * const);
+
+
+// This function is used for debug only, not optimized at all
+void
+print_block_matrix_full_m(FILE *,
+                          const struct block_matrix * const,
+                          const char * const);
+
 /* ----------------------------------------------------------- */
 
 #endif // OUTPUT_H

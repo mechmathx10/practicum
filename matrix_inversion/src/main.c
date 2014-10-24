@@ -233,10 +233,6 @@ main(int argc, char **argv)
     fclose(input_stream);
 
   make_unit_block_matrix(&result, matrix.size);
-#ifdef _DEBUG_
-  print_block_matrix_m(output_stream, &matrix, "Source matrix");
-  print_block_matrix_m(output_stream, &result, "Result matrix");
-#endif
 #undef INPUT_SECTION
 
 #define INVERSE_SECTION

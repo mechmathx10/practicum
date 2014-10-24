@@ -1,11 +1,14 @@
 #include "matrix_utils.h"
 #include "block_utils.h"
-#include "output.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#define NOT_FOUND -1
+
+static const double EPS = 1e-15;
 
 /* ----------------------------------------------------------- */
 
@@ -78,13 +81,17 @@ inverse_block(block *matrix, block *result)
     {
       // TODO: select main element
       cur_elem = matrix->values[i * (n + 1)];
+      if (abs(cur_elem) < EPS)
+        {
+          fprintf(stderr, "Cannot inverse block, "
+                          "picked element is approximately zero.\n");
+          return ET_SINGULAR;
+        }
       for (int j = i; j < n; ++j)
         {
           matrix->values[i * n + j] /= cur_elem;
           result->values[i * n + j] /= cur_elem;
         }
-      print_simple_matrix(stdout, matrix);
-      print_simple_matrix(stdout, result);
       for (int l = 0; l < n; ++l)
         {
           if (l == i)
@@ -96,8 +103,7 @@ inverse_block(block *matrix, block *result)
                   cur_row_elem * matrix->values[i * n + k];
               result->values[l * n + k] -=
                   cur_row_elem * result->values[i * n + k];
-              print_simple_matrix(stdout, matrix);
-              print_simple_matrix(stdout, result);
+
             }
           printf("finished %d row\n", l);
         }
@@ -211,6 +217,20 @@ substract_unit_block_matrix(struct block_matrix *matrix)
       for (int j = 0; j < matrix->residue; ++j)
         cur_block_ptr[j * (matrix->residue + 1)] -= 1;
     }
+}
+
+/* ----------------------------------------------------------- */
+
+inline
+double
+get_block_matrix_element(const struct block_matrix * const matrix,
+                         const int i, const int j)
+{
+  const int N = matrix->size;
+  const int M = matrix->block_size;
+  return matrix->values[M * ((N * (i / M)) +
+                            ((i / M == N / M ? N % M : M) * (j / M))) +
+                        ((j / M == N / M ? N % M : M) * (i % M)) + j % M];
 }
 
 /* ----------------------------------------------------------- */
