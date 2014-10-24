@@ -39,7 +39,6 @@ add_transposition(struct permutation *permutation, int i, int j)
 
 /* ----------------------------------------------------------- */
 
-// TODO : implement get_inversed
 void
 get_inversed(const struct permutation * const permutation,
              struct permutation *inversed)

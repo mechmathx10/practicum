@@ -21,7 +21,7 @@ find_row_main_block(const struct block_matrix * const,
 
 
 /* we assume that both matrices are already initialized */
-void
+enum error_type
 inverse_block_matrix(struct block_matrix *, struct block_matrix *);
 
 /* ----------------------------------------------------------- */

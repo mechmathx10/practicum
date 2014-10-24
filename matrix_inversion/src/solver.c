@@ -94,24 +94,112 @@ find_row_main_block(const struct block_matrix * const matrix,
 
 /* ----------------------------------------------------------- */
 
-void inverse_block_matrix(struct block_matrix *matrix,
-                          struct block_matrix *result)
+enum error_type
+inverse_block_matrix(struct block_matrix *matrix, struct block_matrix *result)
 {
 #ifdef _DEBUG_
   print_block_matrix_full_m(stdout, matrix, "Start: source matrix");
   print_block_matrix_full_m(stdout, result, "Start: result matrix");
 #endif
 
-  const int block_size = matrix->block_size;
-  const int size = matrix->size;
-  UNUSED(block_size);
-  UNUSED(size);
+  const int M = matrix->block_size;
+  const int N = matrix->size;
+  const int K = N / M;
+  const int R = N % M;
 
   struct permutation col_perm;
   init_permutation(&col_perm, matrix->full_block_count);
   print_permutation(stdout, &col_perm);
 
+  int main_block_index;
+  block main_block;
+  make_zero_block(&main_block, M);
+  block buffer_alpha;
+  make_zero_block(&buffer_alpha, M);
+  block buffer_beta;
+  make_zero_block(&buffer_beta, M);
+  block buffer_inversed;
+  make_zero_block(&buffer_inversed, M);
+
+  for (int i = 0; i < K; ++i)
+    {
+#if _DEBUG_
+      printf("STEP %d\n-------------------------------\n", i);
+#endif
+      main_block_index = find_row_main_block(matrix, &buffer_alpha,
+                                             &buffer_beta, i);
+      if (main_block_index == NOT_FOUND)
+        {
+          fprintf(stderr, "Cannot pick main block, matrix is singular.\n");
+          DELETE(col_perm);
+          DELETE(main_block);
+          DELETE(buffer_alpha);
+          DELETE(buffer_beta);
+          DELETE(buffer_inversed);
+          return ET_SINGULAR;
+        }
+#if _DEBUG_
+      get_block(matrix, &main_block, i, main_block_index);
+      print_block_matrix_full_m(stdout, matrix, "Source matrix");
+      print_block_matrix_full_m(stdout, result, "Inversed matrix");
+      print_simple_matrix_m(stdout, &main_block, "Main block");
+      get_block(matrix, &buffer_alpha, i, main_block_index);
+      inverse_block(&buffer_alpha, &buffer_beta);
+      print_simple_matrix_m(stdout, &buffer_beta, "Inversed main block");
+      fprintf(stdout, "Inversed norm: %f\n", simple_matrix_norm(&buffer_beta));
+#endif
+      if (main_block_index != i)
+        {
+          swap_block_columns(matrix, &buffer_alpha, i, main_block_index);
+          add_transposition(&col_perm, i, main_block_index);
+        }
+
+      get_block(matrix, &main_block, i, main_block_index);
+      inverse_block(&main_block, &buffer_inversed);
+      for (int j = i; j < K; ++j)
+        {
+          get_block(matrix, &buffer_alpha, i, j);
+          multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+          put_block(matrix, &buffer_beta, i, j);
+          get_block(result, &buffer_alpha, i, j);
+          multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+          put_block(result, &buffer_beta, i, j);
+        }
+      if (R != 0)
+        {
+          get_block(matrix, &buffer_alpha, i, K);
+          multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+          put_block(matrix, &buffer_beta, i, K);
+          get_block(result, &buffer_alpha, i, K);
+          multiply_blocks(&buffer_inversed, &buffer_alpha, &buffer_beta);
+          put_block(result, &buffer_beta, i, K);
+        }
+#if 0
+      for (int l = 0; l < N; ++l)
+        {
+          if (l == i)
+            continue;
+          cur_row_elem = matrix->values[l * N + i];
+          for (int k = 0; k < N; ++k)
+            {
+              matrix->values[l * N + k] -=
+                  cur_row_elem * matrix->values[i * N + k];
+              result->values[l * N + k] -=
+                  cur_row_elem * result->values[i * N + k];
+            }
+        }
+#endif
+    }
+
+  print_block_matrix_full_m(stdout, matrix, "Source matrix");
+  print_block_matrix_full_m(stdout, result, "Inversed matrix");
+
+  DELETE(main_block);
+  DELETE(buffer_alpha);
+  DELETE(buffer_beta);
   DELETE(col_perm);
+  DELETE(buffer_inversed);
+  return ET_CORRECT;
 }
 
 /* ----------------------------------------------------------- */

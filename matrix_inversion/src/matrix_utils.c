@@ -69,46 +69,39 @@ substract_block(block *minuend, const block * const subtrahend)
 enum error_type
 inverse_block(block *matrix, block *result)
 {
-  int n = matrix->height;
+  int N = matrix->height;
 
-  memset(result->values, 0, SQUARE_DOUB(n));
-  for (int i = 0; i < n; ++i)
-    result->values[i * (n + 1)] = 1;
+  memset(result->values, 0, SQUARE_DOUB(N));
+  for (int i = 0; i < N; ++i)
+    result->values[i * (N + 1)] = 1;
 
   double cur_elem;
   double cur_row_elem;
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < N; ++i)
     {
       // TODO: select main element
-      cur_elem = matrix->values[i * (n + 1)];
+      cur_elem = matrix->values[i * (N + 1)];
       if (abs(cur_elem) < EPS)
-        {
-          fprintf(stderr, "Cannot inverse block, "
-                          "picked element is approximately zero.\n");
           return ET_SINGULAR;
-        }
-      for (int j = i; j < n; ++j)
-        {
-          matrix->values[i * n + j] /= cur_elem;
-          result->values[i * n + j] /= cur_elem;
-        }
-      for (int l = 0; l < n; ++l)
+      for (int j = i; j < N; ++j)
+          matrix->values[i * N + j] /= cur_elem;
+      for (int j = 0; j < N; ++j)
+          result->values[i * N + j] /= cur_elem;
+      for (int l = 0; l < N; ++l)
         {
           if (l == i)
             continue;
-          cur_row_elem = matrix->values[l * n + i];
-          for (int k = 0; k < n; ++k)
+          cur_row_elem = matrix->values[(l * N) + i];
+          for (int k = 0; k < N; ++k)
             {
-              matrix->values[l * n + k] -=
-                  cur_row_elem * matrix->values[i * n + k];
-              result->values[l * n + k] -=
-                  cur_row_elem * result->values[i * n + k];
+              matrix->values[l * N + k] -=
+                  cur_row_elem * matrix->values[i * N + k];
+              result->values[l * N + k] -=
+                  cur_row_elem * result->values[i * N + k];
 
             }
-          printf("finished %d row\n", l);
         }
     }
-  printf("finished\n");
   return ET_CORRECT;
 }
 
@@ -126,10 +119,10 @@ multiply_blocks(const block * const first_matrix,
     {
       for (int j = 0; j < l; ++j)
         {
-          result->values[i * m + j] = 0;
+          result->values[i * l + j] = 0;
           for (int k = 0; k < n; ++k)
             {
-              result->values[i * m + j] +=
+              result->values[i * l + j] +=
                   first_matrix->values[i * n + k] *
                   second_matrix->values[k * l + j];
             }
@@ -160,12 +153,21 @@ simple_matrix_norm(const block * const matrix)
 
 /* ----------------------------------------------------------- */
 
-// TODO : implement block_matrix_norm
+// TODO : optimize block_matrix_norm
 double
 block_matrix_norm(const struct block_matrix * const matrix)
 {
-  UNUSED(matrix);
-  return 0;
+  double current_max = 0;
+  double current_sum;
+  for (int i = 0; i < matrix->size; ++i)
+    {
+      current_sum = 0;
+      for (int j = 0; j < matrix->size; ++j)
+        current_sum += fabs(get_block_matrix_element(matrix, i, j));
+      if (current_sum > current_max)
+        current_max = current_sum;
+    }
+  return current_max;
 }
 
 /* ----------------------------------------------------------- */
@@ -194,6 +196,12 @@ make_unit_block_matrix(struct block_matrix *matrix, const int size)
       double *current_ptr = get_block_start(matrix, i, i);
       for (int j = 0; j < M; ++j)
         current_ptr[j * (M + 1)] = 1;
+    }
+  if (matrix->residue)
+    {
+      double *current_ptr = get_block_start(matrix, block_count, block_count);
+      for (int j = 0; j < matrix->residue; ++j)
+        current_ptr[j * (matrix->residue + 1)] = 1;
     }
 }
 

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <time.h>
+#include <string.h>
 
 #define _DEBUG_ 0
 
@@ -32,6 +33,7 @@ struct mi_config
   int matrix_size_given;
 };
 
+
 static struct mi_config mconfig = {
   .input_filename = (char *) NULL,
   .input_stream_type = IT_CONSOLE,
@@ -42,6 +44,7 @@ static struct mi_config mconfig = {
   .matrix_size = DEFAULT_MATRIX_SIZE,
   .matrix_size_given = 0,
 };
+
 
 struct option options[] = {
   { .name = "input_file",    .val = 'i',  .has_arg = required_argument },
@@ -147,7 +150,7 @@ process_options(int argc, char **argv)
 double
 func(int i, int j)
 {
-  return 1.0 / (i + j + 1);
+  return 1.0 + (double) (i > j ? i : j);
 }
 
 /* ----------------------------------------------------------- */
@@ -200,6 +203,7 @@ main(int argc, char **argv)
 #define INPUT_SECTION
   struct block_matrix matrix;
   struct block_matrix result;
+  struct block_matrix saved_matrix;
   matrix.block_size = mconfig.block_size;
   result.block_size = mconfig.block_size;
   enum input_type in_type = mconfig.input_stream_type;
@@ -233,18 +237,40 @@ main(int argc, char **argv)
     fclose(input_stream);
 
   make_unit_block_matrix(&result, matrix.size);
+  saved_matrix.size = matrix.size;
+  saved_matrix.block_size = matrix.block_size;
+  saved_matrix.residue = matrix.residue;
+  saved_matrix.full_block_count = matrix.full_block_count;
+  saved_matrix.values = (double *) malloc(SQUARE_DOUB(saved_matrix.size));
+  memcpy(saved_matrix.values, matrix.values, SQUARE_DOUB(saved_matrix.size));
+  print_block_matrix_full_m(output_stream, &saved_matrix, "Saved matrix");
 #undef INPUT_SECTION
 
 #define INVERSE_SECTION
   time_t t = clock();
-  inverse_block_matrix(&matrix, &result);
+  current_state = inverse_block_matrix(&matrix, &result);
+  if (current_state != ET_CORRECT)
+    {
+      fprintf(stderr, "Error inversing matrix.\n");
+      DELETE(matrix);
+      DELETE(result);
+      DELETE(saved_matrix);
+      if (mconfig.output_stream_type == OT_FILE)
+        fclose(output_stream);
+      return current_state;
+    }
   t = clock() - t;
   printf("Inversion time: %.3fs\n", (double)t / CLOCKS_PER_SEC);
 #undef INVERSE_SECTION
 
+#define OUTPUT_SECTION
+
+#undef OUTPUT_SECTION
+
 #define RESOURSE_FREE_SECTION
   DELETE(matrix);
   DELETE(result);
+  DELETE(saved_matrix);
   if (mconfig.output_stream_type == OT_FILE)
     fclose(output_stream);
 #undef RESOURSE_FREE_SECTION

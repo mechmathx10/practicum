@@ -144,7 +144,6 @@ inverse_matrix(struct simple_matrix *matrix, struct simple_matrix *result)
       max_elem_index = find_row_main_element(matrix, i);
       if (max_elem_index == NOT_FOUND)
         {
-          fprintf(stderr, "Cannot pick main element, matrix is singular.\n");
           free(buff);
           DELETE(var_perm);
           return ET_SINGULAR;
@@ -163,10 +162,9 @@ inverse_matrix(struct simple_matrix *matrix, struct simple_matrix *result)
 
       cur_elem = matrix->values[i * (N + 1)];
       for (int j = i; j < N; ++j)
-        {
           matrix->values[i * N + j] /= cur_elem;
+      for (int j = 0; j < N; ++j)
           result->values[i * N + j] /= cur_elem;
-        }
       for (int l = 0; l < N; ++l)
         {
           if (l == i)

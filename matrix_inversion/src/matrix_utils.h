@@ -39,6 +39,7 @@ enum error_type
 inverse_block(block *, block *);
 
 
+// TODO : make efficient block multiplication
 enum error_type
 multiply_blocks(const block * const, const block * const, block *);
 
