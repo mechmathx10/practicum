@@ -203,13 +203,13 @@ read_block_matrix(FILE *input_stream,
 
   matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
 
-  int N = matrix->size; // for big formulas
+  const int N = matrix->size; // for big formulas
   if (source_type == IT_CONSOLE)
       printf("Input %d real values: \n", N * N);
 
 #define MAGIC 100500
-  int M = matrix->block_size;
-  int K = (N / M) + 1;
+  const int M = matrix->block_size;
+  const int K = (N / M) + 1;
   int current_index;
   for (int i = 0; i < matrix->size; ++i)
     {
@@ -262,9 +262,9 @@ generate_block_matrix(struct block_matrix *matrix, double (*f)(int, int))
 
   matrix->values = (double *) malloc(SQUARE_DOUB(matrix->size));
 
-  int N = matrix->size;
-  int M = matrix->block_size;
-  int K = (N / M) + 1;
+  const int N = matrix->size;
+  const int M = matrix->block_size;
+  const int K = (N / M) + 1;
   int current_index;
   for (int i = 0; i < matrix->size; ++i)
     {
