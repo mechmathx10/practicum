@@ -72,7 +72,7 @@ solve_linear_system(FILE *output_stream,
   for (int i = 0; i < size; ++i)
     {
       r_current.values[i] -= free_terms->values[i];
-      fprintf(output_stream, "%e\t", r_current.values[i]);
+      fprintf(output_stream, "%e\t", (-1) * r_current.values[i]);
     }
   fprintf(output_stream, "\nResidual norm: %e\n", vector_norm(&r_current));
 
