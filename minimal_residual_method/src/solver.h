@@ -13,7 +13,8 @@
 //  result vector
 //  solution precision
 enum error_type
-solve_linear_system(const struct simple_matrix * const,
+solve_linear_system(FILE *,
+                    const struct simple_matrix * const,
                     const struct vector * const,
                     struct vector *,
                     const double);

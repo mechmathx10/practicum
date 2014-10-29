@@ -13,6 +13,16 @@ static const double EPS = 1e-15;
 
 inline
 void
+init_vector(struct vector *vector, const int size)
+{
+  vector->values = (double *) malloc(size * sizeof(double));
+  vector->size = size;
+}
+
+/* ----------------------------------------------------------- */
+
+inline
+void
 set_zero_simple_matrix(struct simple_matrix *matrix)
 {
   memset(matrix->values, 0, SQUARE_DOUB(matrix->height));
@@ -67,10 +77,28 @@ substract_simple_matrix(struct simple_matrix *minuend,
 /* ----------------------------------------------------------- */
 
 enum error_type
+multiply_matrix_and_vector(const struct simple_matrix * const matrix,
+                           const struct vector * const vector,
+                           struct vector *result)
+{
+  const int N = vector->size;
+  result->size = N;
+  memset(result->values, 0, N * sizeof(double));
+  for (int i = 0; i < N; ++i)
+    {
+      for (int j = 0; j < N; ++j)
+        result->values[i] += matrix->values[i * N + j] + vector->values[j];
+    }
+  return ET_CORRECT;
+}
+
+/* ----------------------------------------------------------- */
+
+enum error_type
 inverse_simple_matrix(struct simple_matrix *matrix,
                       struct simple_matrix *result)
 {
-  int N = matrix->height;
+  const int N = matrix->height;
   result->height = N;
   result->width = N;
 
@@ -113,9 +141,9 @@ multiply_simple_matrices(const struct simple_matrix * const first_matrix,
                          const struct simple_matrix * const second_matrix,
                          struct simple_matrix *result)
 {
-  int m = first_matrix->height;
-  int n = first_matrix->width;
-  int l = second_matrix->width;
+  const int m = first_matrix->height;
+  const int n = first_matrix->width;
+  const int l = second_matrix->width;
   memset(result->values, 0, m * l * sizeof(double));
   result->height = first_matrix->height;
   result->width = second_matrix->width;
@@ -132,6 +160,19 @@ multiply_simple_matrices(const struct simple_matrix * const first_matrix,
         }
     }
   return ET_CORRECT;
+}
+
+/* ----------------------------------------------------------- */
+
+double
+scalar_product(const struct vector * const first_vector,
+               const struct vector * const second_vector)
+{
+  const int N = first_vector->size;
+  double result = 0;
+  for (int i = 0; i < N; ++i)
+    result += first_vector->values[i] * second_vector->values[i];
+  return result;
 }
 
 /* ----------------------------------------------------------- */

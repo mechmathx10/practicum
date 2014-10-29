@@ -5,6 +5,10 @@
 
 /* ----------------------------------------------------------- */
 
+inline
+void
+init_vector(struct vector *, const int);
+
 // does not allocate memory for struct simple_matrix's values
 inline
 void
@@ -41,9 +45,19 @@ inverse_simple_matrix(struct simple_matrix *, struct simple_matrix *);
 
 
 enum error_type
+multiply_matrix_and_vector(const struct simple_matrix * const,
+                           const struct vector * const,
+                           struct vector *);
+
+
+enum error_type
 multiply_simple_matrices(const struct simple_matrix * const,
                          const struct simple_matrix * const,
                          struct simple_matrix *);
+
+
+double
+scalar_product(const struct vector * const, const struct vector * const);
 
 
 double

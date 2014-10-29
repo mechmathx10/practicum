@@ -26,7 +26,6 @@ enum input_type
 {
   IT_FILE = 0,
   IT_CONSOLE = 1,
-  IT_GENERATE = 2,
 };
 
 

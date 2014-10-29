@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define EPS 1e-5
+
 /* ----------------------------------------------------------- */
 
 struct mrm_config
@@ -17,13 +19,16 @@ struct mrm_config
   enum input_type input_stream_type;
   char *output_filename;
   enum output_type output_stream_type;
+  double precision;
 };
+
 
 static struct mrm_config mrm_config = {
   .input_filename = (char *) NULL,
   .input_stream_type = IT_CONSOLE,
   .output_filename = (char *) NULL,
   .output_stream_type = OT_CONSOLE,
+  .precision = EPS,
 };
 
 /* ----------------------------------------------------------- */
@@ -31,6 +36,7 @@ static struct mrm_config mrm_config = {
 struct option options[] = {
   { .name = "input_file",    .val = 'i',  .has_arg = required_argument },
   { .name = "output_file",   .val = 'o',  .has_arg = required_argument },
+  { .name = "precision",     .val = 'p',  .has_arg = required_argument },
   { .name = "help",          .val = 'h',  .has_arg = no_argument },
   { .name = NULL },
 };
@@ -44,8 +50,9 @@ print_usage(FILE *output_stream, char *program_name)
           "Usage: %s [OPTIONS]\n"
           "  --input_file,  -i [filename]     input file.\n"
           "  --output-file, -o [filename]     output file.\n"
-          "  --help,        -h                print this message\n\n",
-          program_name);
+          "  --precision,   -p [value]        precision. (default is %f)\n"
+          "  --help,        -h                print this message.\n\n",
+          program_name, EPS);
 }
 
 
@@ -54,7 +61,7 @@ enum error_type
 process_options(int argc, char **argv)
 {
   int opt;
-  while ((opt = getopt_long(argc, argv, "i:o:h", options, NULL)) != -1)
+  while ((opt = getopt_long(argc, argv, "i:o:p:h", options, NULL)) != -1)
     {
       switch (opt)
         {
@@ -65,6 +72,9 @@ process_options(int argc, char **argv)
         case 'o':
           mrm_config.output_filename = optarg;
           mrm_config.output_stream_type = OT_FILE;
+          break;
+        case 'p':
+          mrm_config.precision = atof(optarg);
           break;
         case 'h':
           print_usage(stdout, argv[0]);
@@ -80,6 +90,12 @@ process_options(int argc, char **argv)
       printf("Neither input nor output file specified, might be an error.\n");
       print_usage(stdout, argv[0]);
     }
+  if (mrm_config.precision < 0)
+    {
+      fprintf(stderr, "Given precision is negative, so precision has been set "
+                      "to default: %f\n", EPS);
+      mrm_config.precision = EPS;
+    }
 
   return ET_CORRECT;
 }
@@ -90,7 +106,6 @@ int
 main(int argc, char **argv)
 {
   int current_state = ET_CORRECT;
-  printf("This is a test program\n");
   process_options(argc, argv);
 
   FILE *input_stream = NULL;
@@ -142,11 +157,12 @@ main(int argc, char **argv)
     fclose(input_stream);
 
   const int size = coefficients.height;
-  result.values = (double *) malloc(SQUARE_DOUB(size));
+  init_vector(&result, size);
 
   // TODO : solve system
-  print_extended_matrix_m(stdout, &coefficients,
-                          &free_terms, "This is our matrix");
+  print_extended_matrix_m(stdout, &coefficients, &free_terms,
+                          "This is our extended matrix");
+  print_vector(stdout, &free_terms);
 
 
   DELETE(coefficients);
