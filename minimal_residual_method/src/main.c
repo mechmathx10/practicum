@@ -159,11 +159,10 @@ main(int argc, char **argv)
   const int size = coefficients.height;
   init_vector(&result, size);
 
-  // TODO : solve system
   print_extended_matrix_m(stdout, &coefficients, &free_terms,
                           "This is our extended matrix");
-  print_vector(stdout, &free_terms);
-
+  solve_linear_system(stdout, &coefficients, &free_terms,
+                      &result, mrm_config.precision);
 
   DELETE(coefficients);
   DELETE(free_terms);

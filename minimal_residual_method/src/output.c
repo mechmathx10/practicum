@@ -6,7 +6,7 @@ void
 print_vector(FILE *output_stream, const struct vector * const vector)
 {
   for (int i = 0; i < vector->size; ++i)
-    fprintf(output_stream, "%f ", vector->values[i]);
+    fprintf(output_stream, "%f\t", vector->values[i]);
   fprintf(output_stream, "\n");
 }
 
@@ -19,7 +19,6 @@ print_vector_m(FILE *output_stream,
 {
   fprintf(output_stream, "%s\n", message);
   print_vector(output_stream, vector);
-  fprintf(output_stream, "\n");
 }
 
 /* ----------------------------------------------------------- */

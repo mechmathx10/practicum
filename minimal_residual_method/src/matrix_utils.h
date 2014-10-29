@@ -33,6 +33,13 @@ void
 make_unit_simple_matrix(struct simple_matrix *, const int);
 
 
+// first -= second * third
+void
+substract_multiplied_vector(struct vector *,
+                            const struct vector * const,
+                            const double);
+
+
 // first -= second
 void
 substract_simple_matrix(struct simple_matrix *,
@@ -58,6 +65,10 @@ multiply_simple_matrices(const struct simple_matrix * const,
 
 double
 scalar_product(const struct vector * const, const struct vector * const);
+
+
+double
+vector_norm(const struct vector * const);
 
 
 double

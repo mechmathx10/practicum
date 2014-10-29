@@ -12,7 +12,7 @@
 //  free terms vector
 //  result vector
 //  solution precision
-enum error_type
+int
 solve_linear_system(FILE *,
                     const struct simple_matrix * const,
                     const struct vector * const,

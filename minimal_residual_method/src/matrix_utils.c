@@ -65,6 +65,22 @@ make_unit_simple_matrix(struct simple_matrix *matrix, const int size)
 
 /* ----------------------------------------------------------- */
 
+// first -= second * third
+void
+substract_multiplied_vector(struct vector *minuend,
+                            const struct vector * const subtrahend,
+                            const double multiplier)
+{
+  const int N = minuend->size;
+  for (int i = 0; i < N; ++i)
+    {
+      minuend->values[i] -= subtrahend->values[i] * multiplier;
+      // printf("%f\t%f\n", minuend->values[i], subtrahend->values[i]);
+    }
+}
+
+/* ----------------------------------------------------------- */
+
 void
 substract_simple_matrix(struct simple_matrix *minuend,
                         const struct simple_matrix * const subtrahend)
@@ -87,7 +103,7 @@ multiply_matrix_and_vector(const struct simple_matrix * const matrix,
   for (int i = 0; i < N; ++i)
     {
       for (int j = 0; j < N; ++j)
-        result->values[i] += matrix->values[i * N + j] + vector->values[j];
+        result->values[i] += matrix->values[i * N + j] * vector->values[j];
     }
   return ET_CORRECT;
 }
@@ -172,6 +188,22 @@ scalar_product(const struct vector * const first_vector,
   double result = 0;
   for (int i = 0; i < N; ++i)
     result += first_vector->values[i] * second_vector->values[i];
+  return result;
+}
+
+/* ----------------------------------------------------------- */
+
+double
+vector_norm(const struct vector * const vector)
+{
+  const int N = vector->size;
+  double result = 0;
+  for (int i = 0; i < N; ++i)
+    {
+      double current_abs = fabs(vector->values[i]);
+      if (current_abs > result)
+        result = current_abs;
+    }
   return result;
 }
 
