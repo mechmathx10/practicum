@@ -47,6 +47,12 @@ solve_linear_system(FILE *output_stream,
       multiply_matrix_and_vector(coefficients, &x_current, &r_current);
       for (int i = 0; i < size; ++i)
         r_current.values[i] -= free_terms->values[i];
+      if (vector_norm(&r_current) < eps * eps)
+        {
+          memset(x_next.values, 0, size * sizeof(double));
+          ++n;
+          break;
+        }
 
       multiply_matrix_and_vector(coefficients, &r_current, &r_transformed);
       double norm = vector_norm(&r_transformed);
