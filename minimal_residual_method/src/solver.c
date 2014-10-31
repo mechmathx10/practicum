@@ -73,7 +73,11 @@ solve_linear_system(FILE *output_stream,
     }
 
   memcpy(solution->values, x_next.values, size * sizeof(double));
-  fprintf(output_stream, "Iterations taken: %d\n", n);
+  fprintf(output_stream, "-------------------------------------\n");
+  fprintf(output_stream, "Solution:\n");
+  for (int i = 0; i < size; ++i)
+      fprintf(output_stream, "%f\t", solution->values[i]);
+  fprintf(output_stream, "\nIterations taken:\n%d\n", n);
   multiply_matrix_and_vector(coefficients, solution, &r_current);
   fprintf(output_stream, "Residual:\n");
   for (int i = 0; i < size; ++i)
@@ -81,7 +85,7 @@ solve_linear_system(FILE *output_stream,
       r_current.values[i] -= free_terms->values[i];
       fprintf(output_stream, "%e\t", (-1) * r_current.values[i]);
     }
-  fprintf(output_stream, "\nResidual norm: %e\n", vector_norm(&r_current));
+  fprintf(output_stream, "\nResidual norm:\n%e\n", vector_norm(&r_current));
 
   DELETE(r_current);
   DELETE(r_transformed);
