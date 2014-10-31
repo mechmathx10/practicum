@@ -59,6 +59,7 @@ solve_linear_system(FILE *output_stream,
       double norm = vector_norm(&r_transformed);
 
       tau = scalar_product(&r_transformed, &r_current) / (norm * norm);
+      fprintf(output_stream, "d = %f\n", tau);
       memcpy(x_next.values, x_current.values, size * sizeof(double));
       for (int i = 0; i < size; ++i)
         x_next.values[i] = x_current.values[i] - (r_current.values[i] * tau);
