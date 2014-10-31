@@ -8,7 +8,7 @@ OBJDIR=obj
 SRCDIR=src
 EXEDIR=exe
 
-OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o matrix_utils.o solver.o)
+OBJECTS=$(addprefix $(OBJDIR)/, input.o output.o matrix_utils.o solver.o generator.o)
 EXEOBJECT=$(addprefix $(OBJDIR)/, main.o)
 
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
@@ -28,6 +28,9 @@ $(OBJDIR)/output.o : $(SRCDIR)/output.h $(SRCDIR)/output.c $(NOIST_HEADERS)
 
 $(OBJDIR)/solver.o : $(SRCDIR)/solver.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/solver.c -o $(OBJDIR)/solver.o $(CFLAGS) $(CPPFLAGS)
+
+$(OBJDIR)/generator.o : $(SRCDIR)/generator.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/generator.c -o $(OBJDIR)/generator.o $(CFLAGS) $(CPPFLAGS)
 
 $(EXEOBJECT) : $(SRCDIR)/main.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o $(CFLAGS) $(CPPFLAGS)

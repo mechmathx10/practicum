@@ -3,6 +3,7 @@
 #include "input.h"
 #include "output.h"
 #include "matrix_utils.h"
+#include "generator.h"
 
 #include <stdio.h>
 #include <getopt.h>
@@ -10,6 +11,7 @@
 #include <stdlib.h>
 
 #define EPS 1e-5
+#define DEFAULT_SIZE 10
 
 /* ----------------------------------------------------------- */
 
@@ -20,6 +22,8 @@ struct mrm_config
   char *output_filename;
   enum output_type output_stream_type;
   double precision;
+  int generator_mode;
+  int partition_size;
 };
 
 
@@ -29,7 +33,16 @@ static struct mrm_config mrm_config = {
   .output_filename = (char *) NULL,
   .output_stream_type = OT_CONSOLE,
   .precision = EPS,
+  .generator_mode = 0,
+  .partition_size = DEFAULT_SIZE
 };
+
+/* ----------------------------------------------------------- */
+
+double func(const double x, const double y)
+{
+  return 0 * (x + y);
+}
 
 /* ----------------------------------------------------------- */
 
@@ -37,6 +50,8 @@ struct option options[] = {
   { .name = "input_file",    .val = 'i',  .has_arg = required_argument },
   { .name = "output_file",   .val = 'o',  .has_arg = required_argument },
   { .name = "precision",     .val = 'p',  .has_arg = required_argument },
+  { .name = "generate",      .val = 'g',  .has_arg = required_argument },
+  { .name = "size",          .val = 's',  .has_arg = no_argument },
   { .name = "help",          .val = 'h',  .has_arg = no_argument },
   { .name = NULL },
 };
@@ -51,6 +66,11 @@ print_usage(FILE *output_stream, char *program_name)
           "  --input_file,  -i [filename]     input file.\n"
           "  --output-file, -o [filename]     output file.\n"
           "  --precision,   -p [value]        precision. (default is %f)\n"
+          "  --generate,    -g                generate matrix instead of\n"
+          "                                   solving linear system. Only -o\n"
+          "                                   and -s options works with -g\n"
+          "  --size,        -s                works with -g. affects I and J\n"
+          "                                   partition parameters\n"
           "  --help,        -h                print this message.\n\n",
           program_name, EPS);
 }
@@ -61,7 +81,7 @@ enum error_type
 process_options(int argc, char **argv)
 {
   int opt;
-  while ((opt = getopt_long(argc, argv, "i:o:p:h", options, NULL)) != -1)
+  while ((opt = getopt_long(argc, argv, "i:o:p:gs:h", options, NULL)) != -1)
     {
       switch (opt)
         {
@@ -79,16 +99,16 @@ process_options(int argc, char **argv)
         case 'h':
           print_usage(stdout, argv[0]);
           exit(0);
+        case 'g':
+          mrm_config.generator_mode = 1;
+          break;
+        case 's':
+          mrm_config.partition_size = atoi(optarg);
+          break;
         default:
           print_usage(stderr, argv[0]);
           exit(1);
         }
-    }
-  if (mrm_config.input_stream_type == IT_CONSOLE &&
-      mrm_config.output_stream_type == OT_CONSOLE)
-    {
-      printf("Neither input nor output file specified, might be an error.\n");
-      print_usage(stdout, argv[0]);
     }
   if (mrm_config.precision < 0)
     {
@@ -96,6 +116,23 @@ process_options(int argc, char **argv)
                       "to default: %f\n", EPS);
       mrm_config.precision = EPS;
     }
+  if (mrm_config.generator_mode)
+    {
+      if (mrm_config.partition_size < 1)
+        {
+          fprintf(stderr, "Given size is negative, so it has been set "
+                          "to default: %d\n", DEFAULT_SIZE);
+          mrm_config.partition_size = DEFAULT_SIZE;
+        }
+      if (mrm_config.input_stream_type == IT_FILE)
+          printf("Note that -i option does not affect -g mode\n");
+    }
+  else if (mrm_config.input_stream_type == IT_CONSOLE &&
+           mrm_config.output_stream_type == OT_CONSOLE)
+     {
+       printf("Neither input nor output file specified, might be an error.\n");
+       print_usage(stdout, argv[0]);
+     }
 
   return ET_CORRECT;
 }
@@ -106,10 +143,18 @@ int
 main(int argc, char **argv)
 {
   int current_state = ET_CORRECT;
-  process_options(argc, argv);
-
   FILE *input_stream = NULL;
   FILE *output_stream = NULL;
+
+  process_options(argc, argv);
+  if (mrm_config.generator_mode)
+    {
+      return generate_matrix(mrm_config.output_filename,
+                             mrm_config.partition_size,
+                             mrm_config.partition_size,
+                             func);
+    }
+
   if (mrm_config.input_stream_type == IT_FILE)
     {
       input_stream = fopen(mrm_config.input_filename, "r");
