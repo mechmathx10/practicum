@@ -59,8 +59,15 @@ solve_linear_system(FILE *output_stream,
       for (int i = 0; i < size; ++i)
           x_current.values[i] -= x_next.values[i];
       double residual = vector_norm(&x_current);
+      fprintf(output_stream, "||x^%d - x^%d|| = %f\n", n + 1, n, residual);
+      fprintf(output_stream, "||r^%d|| = %f\n", n, vector_norm(&r_current));
       if (residual < eps)
         break;
+      for (int i = 0; i < size; ++i)
+          x_current.values[i] += x_next.values[i];
+      fprintf(output_stream, "||x^%d - x^%d|| / ||x^%d|| = %f\n", n + 1, n, n,
+              residual / vector_norm(&x_current));
+      fprintf(output_stream, "-------------------------------------\n");
       ++n;
       memcpy(x_current.values, x_next.values, size * sizeof(double));
     }
