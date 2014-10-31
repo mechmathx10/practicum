@@ -49,7 +49,8 @@ solve_linear_system(FILE *output_stream,
         r_current.values[i] -= free_terms->values[i];
       if (vector_norm(&r_current) < eps * eps)
         {
-          memset(x_next.values, 0, size * sizeof(double));
+          memcpy(x_next.values, x_current.values, size * sizeof(double));
+          fprintf(output_stream, "||r^%d|| = 0\nStopped.\n", n);
           ++n;
           break;
         }
@@ -68,7 +69,9 @@ solve_linear_system(FILE *output_stream,
       fprintf(output_stream, "||x^%d - x^%d|| = %f\n", n + 1, n, residual);
       fprintf(output_stream, "||r^%d|| = %f\n", n, vector_norm(&r_current));
       if (residual < eps)
-        break;
+        {
+          break;
+        }
       for (int i = 0; i < size; ++i)
           x_current.values[i] += x_next.values[i];
       fprintf(output_stream, "||x^%d - x^%d|| / ||x^%d|| = %f\n", n + 1, n, n,
