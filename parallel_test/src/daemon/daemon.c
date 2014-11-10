@@ -14,10 +14,11 @@
 
 static
 void
-daemon_job(pid_t pid)
+daemon_job(pid_t pid, int time_left)
 {
 #if LOUD
-  printf("Daemon #%d: MUAHAHAHAHA!!!\n", pid);
+  printf("Daemon #%d: MUAHAHAHAHA!!! I will live for another %d seconds!\n",
+         pid, time_left);
 #else
   UNUSED(pid);
 #endif
@@ -48,7 +49,7 @@ main(int argc, char **argv)
   printf("Daemon process started. Pid: %d\n", pid);
 
   for (int i = 0; i < lifetime; ++i)
-    daemon_job(pid);
+    daemon_job(pid, lifetime - i);
 
   printf("Daemon process finished. Pid: %d\n", pid);
   return ET_CORRECT;

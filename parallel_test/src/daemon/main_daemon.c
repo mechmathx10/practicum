@@ -100,8 +100,8 @@ start_daemon(void)
   pid_t result = 0;
   int status;
 
-  printf("Daemon started\n");
-  for (int i = 0; i < DEFAULT_CYCLE_LENGTH; ++i)
+  printf("Daemon caller started\n");
+  while (1)
     {
       dglobals.pid = fork();
       if (dglobals.pid == -1)
@@ -140,7 +140,7 @@ start_daemon(void)
         }
     }
 
-  printf("Daemon finished\n");
+  printf("Daemon caller finished\n");
   return ET_CORRECT;
 }
 
