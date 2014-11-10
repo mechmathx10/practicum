@@ -46,7 +46,7 @@ enum error_type
 process_options(int argc, char **argv)
 {
   int opt;
-  while ((opt = getopt_long(argc, argv, "t:t", options, NULL)) != -1)
+  while ((opt = getopt_long(argc, argv, "t:h", options, NULL)) != -1)
     {
       switch (opt)
         {
