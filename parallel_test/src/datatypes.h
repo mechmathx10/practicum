@@ -12,6 +12,8 @@ enum error_type
   ET_INPUT_ERROR = 2,
   ET_ARG_ERROR = 3,
   ET_FILE_ERROR = 4,
+  ET_FORK_ERROR = 5,
+  ET_EXEC_ERROR = 6,
 };
 
 
