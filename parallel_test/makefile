@@ -1,4 +1,4 @@
-# makefile for minimal residual problem
+# makefile for small parallel programs
 
 CC=gcc
 CFLAGS=-g -O3 -std=gnu99
@@ -11,6 +11,7 @@ EXEDIR=exe
 THREAD_DIR=thread
 FORK_DIR=fork
 DAEMON_DIR=daemon
+SHARED_DIR=shared_data
 
 OBJECTS=$(addprefix $(OBJDIR)/, )
 NOIST_HEADERS=$(addprefix $(SRCDIR)/, datatypes.h)
@@ -19,13 +20,18 @@ THREAD_OBJECT=$(addprefix $(OBJDIR)/, main_thread.o)
 FORK_OBJECT=$(addprefix $(OBJDIR)/, main_fork.o)
 DAEMON_CALLER_OBJECT=$(addprefix $(OBJDIR)/, main_daemon.o)
 DAEMON_OBJECT=$(addprefix $(OBJDIR)/, daemon.o)
+SHARED_OBJECT=$(addprefix $(OBJDIR)/, shared_data.o)
+SHARED_READER_OBJECT=$(addprefix $(OBJDIR)/, reader.o)
+SHARED_WRITER_OBJECT=$(addprefix $(OBJDIR)/, writer.o)
 
 THREAD_EXE=$(addprefix $(EXEDIR)/, thread_exe)
 FORK_EXE=$(addprefix $(EXEDIR)/, fork_exe)
 DAEMON_CALLER_EXE=$(addprefix $(EXEDIR)/, daemon_exe)
 DAEMON_EXE=$(addprefix $(EXEDIR)/, daemon)
+SHARED_READER_EXE=$(addprefix $(EXEDIR)/, reader)
+SHARED_WRITER_EXE=$(addprefix $(EXEDIR)/, writer)
 
-all : thread fork daemon
+all : thread fork daemon shared_data
 
 ############### Thread part ###############
 
@@ -45,6 +51,17 @@ $(DAEMON_CALLER_OBJECT) : $(SRCDIR)/$(DAEMON_DIR)/main_daemon.c $(NOIST_HEADERS)
 $(DAEMON_OBJECT) : $(SRCDIR)/$(DAEMON_DIR)/daemon.c $(NOIST_HEADERS)
 	$(CC) -c $(SRCDIR)/$(DAEMON_DIR)/daemon.c -o $(DAEMON_OBJECT) $(CFLAGS) $(CPPFLAGS)
 
+############### Shared data ###############
+
+$(SHARED_OBJECT) : $(SRCDIR)/$(SHARED_DIR)/shared_data.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/$(SHARED_DIR)/shared_data.c -o $(SHARED_OBJECT) $(CFLAGS) $(CPPFLAGS)
+
+$(SHARED_WRITER_OBJECT) : $(SRCDIR)/$(SHARED_DIR)/writer.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/$(SHARED_DIR)/writer.c -o $(SHARED_WRITER_OBJECT) $(CFLAGS) $(CPPFLAGS)
+
+$(SHARED_READER_OBJECT) : $(SRCDIR)/$(SHARED_DIR)/reader.c $(NOIST_HEADERS)
+	$(CC) -c $(SRCDIR)/$(SHARED_DIR)/reader.c -o $(SHARED_READER_OBJECT) $(CFLAGS) $(CPPFLAGS)
+
 ###########################################
 
 clean:
@@ -53,6 +70,7 @@ clean:
 	@ rm $(SRCDIR)/$(THREAD_DIR)/*~ -fv
 	@ rm $(SRCDIR)/$(FORK_DIR)/*~ -fv
 	@ rm $(SRCDIR)/$(DAEMON_DIR)/*~ -fv
+	@ rm $(SRCDIR)/$(SHARED_DIR)/*~ -fv
 	@ rm $(THREAD_EXE) -fv
 	@ find $(EXEDIR)/ -type f -not -name "test_*" -not -name "out_*" -exec rm -fv {} \;
 	@ find . -maxdepth 0 -type f -not -name "(README|makefile|run)" -exec rm -fv {} \;
@@ -76,3 +94,13 @@ _daemon: $(DAEMON_OBJECT) $(OBJECTS)
 _daemon_caller: $(DAEMON_CALLER_OBJECT) $(OBJECTS)
 	$(CC) $(DAEMON_CALLER_OBJECT) $(OBJECTS) -o $(DAEMON_CALLER_EXE) $(CFLAGS) $(CPPFLAGS)
 	@ echo -e "\e[0;32mDaemon caller executable compiled: ${DAEMON_CALLER_EXE}\033[0m" ;\
+
+shared_data: _shared_reader _shared_writer
+
+_shared_reader: $(SHARED_READER_OBJECT) $(SHARED_OBJECT) $(OBJECTS)
+	$(CC) $(SHARED_READER_OBJECT) $(OBJECTS) $(SHARED_OBJECT) -o $(SHARED_READER_EXE) $(CFLAGS) $(CPPFLAGS)
+	@ echo -e "\e[0;32mShared reader executable compiled: ${SHARED_READER_EXE}\033[0m" ;\
+
+_shared_writer: $(SHARED_WRITER_OBJECT) $(SHARED_OBJECT) $(OBJECTS)
+	$(CC) $(SHARED_WRITER_OBJECT) $(OBJECTS) $(SHARED_OBJECT) -o $(SHARED_WRITER_EXE) $(CFLAGS) $(CPPFLAGS)
+	@ echo -e "\e[0;32mShared writer executable compiled: ${SHARED_WRITER_EXE}\033[0m" ;\

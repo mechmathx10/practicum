@@ -14,6 +14,8 @@ enum error_type
   ET_FILE_ERROR = 4,
   ET_FORK_ERROR = 5,
   ET_EXEC_ERROR = 6,
+  ET_SHM_ERROR = 7,
+  ET_SEM_ERROR = 8,
 };
 
 
