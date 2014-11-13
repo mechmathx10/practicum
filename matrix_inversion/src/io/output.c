@@ -1,6 +1,6 @@
 #include "output.h"
-#include "block_utils.h"
-#include "matrix_utils.h"
+#include "../utils/block_utils.h"
+#include "../utils/matrix_utils.h"
 
 #define EXTENDED_OUTPUT 1
 

@@ -1,7 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "datatypes.h"
+#include "../datatypes.h"
 
 #include <stdio.h>
 

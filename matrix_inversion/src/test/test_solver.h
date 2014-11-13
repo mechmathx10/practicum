@@ -2,7 +2,7 @@
 #define TEST_SOLVER_H
 
 #include "../datatypes.h"
-#include "../permutation.h"
+#include "../utils/permutation.h"
 
 /* ----------------------------------------------------------- */
 

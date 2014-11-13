@@ -1,8 +1,8 @@
-#include "input.h"
-#include "output.h"
-#include "block_utils.h"
-#include "matrix_utils.h"
-#include "solver.h"
+#include "io/input.h"
+#include "io/output.h"
+#include "utils/block_utils.h"
+#include "utils/matrix_utils.h"
+#include "solver/solver.h"
 
 #include <stdio.h>
 #include <stdlib.h>

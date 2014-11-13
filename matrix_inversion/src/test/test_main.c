@@ -1,8 +1,8 @@
-#include "test_solver.h"
 #include "../datatypes.h"
-#include "../input.h"
-#include "../output.h"
-#include "../matrix_utils.h"
+#include "../io/input.h"
+#include "../io/output.h"
+#include "../utils/matrix_utils.h"
+#include "test_solver.h"
 
 #include <stdio.h>
 #include <getopt.h>

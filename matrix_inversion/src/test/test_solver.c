@@ -1,7 +1,7 @@
 #include "test_solver.h"
-#include "../matrix_utils.h"
-#include "../input.h"
-#include "../output.h"
+#include "../io/input.h"
+#include "../io/output.h"
+#include "../utils/block_utils.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -1,7 +1,7 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include "datatypes.h"
+#include "../datatypes.h"
 
 #include <stdio.h>
 

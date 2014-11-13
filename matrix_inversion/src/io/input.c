@@ -1,5 +1,5 @@
 #include "input.h"
-#include "block_utils.h"
+#include "../utils/block_utils.h"
 
 #include <stdlib.h>
 

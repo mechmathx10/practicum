@@ -1,7 +1,7 @@
 #ifndef BLOCK_UTILS_H
 #define BLOCK_UTILS_H
 
-#include "datatypes.h"
+#include "../datatypes.h"
 
 /* ----------------------------------------------------------- */
 
