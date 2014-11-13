@@ -61,6 +61,11 @@ make_unit_block_matrix(struct block_matrix *, const int);
 
 
 void
+make_block_matrix_copy(const struct block_matrix * const,
+                       struct block_matrix *);
+
+
+void
 substract_unit_block_matrix(struct block_matrix *);
 
 
@@ -70,6 +75,11 @@ double
 get_block_matrix_element(const struct block_matrix * const,
                          const int, const int);
 
+
+void
+multiply_block_matrices(const struct block_matrix * const,
+                        const struct block_matrix * const,
+                        struct block_matrix *);
 
 /* ----------------------------------------------------------- */
 

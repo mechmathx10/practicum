@@ -87,6 +87,42 @@ process_options(int argc, char **argv)
 
 /* ----------------------------------------------------------- */
 
+static
+enum error_type
+init_streams(FILE **input_stream, FILE **output_stream)
+{
+  if (tconfig.input_stream_type == IT_FILE)
+    {
+      *input_stream = fopen(tconfig.input_filename, "r");
+      if (! *input_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for input\n",
+                          tconfig.input_filename);
+          return ET_FILE_ERROR;
+        }
+    }
+  else // tconfig.input_stream_type == IT_CONSOLE
+    *input_stream = stdin;
+  if (tconfig.output_stream_type == OT_FILE)
+    {
+      *output_stream = fopen(tconfig.output_filename, "w");
+      if (! *output_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for output\n",
+                           tconfig.output_filename);
+          if (tconfig.input_stream_type == IT_FILE)
+            fclose(*input_stream);
+          return ET_FILE_ERROR;
+        }
+    }
+  else // tconfig.output_stream_type == OT_CONSOLE
+    *output_stream = stdout;
+
+  return ET_CORRECT;
+}
+
+/* ----------------------------------------------------------- */
+
 int
 main(int argc, char **argv)
 {
@@ -96,32 +132,9 @@ main(int argc, char **argv)
 
   FILE *input_stream = NULL;
   FILE *output_stream = NULL;
-  if (tconfig.input_stream_type == IT_FILE)
-    {
-      input_stream = fopen(tconfig.input_filename, "r");
-      if (! input_stream)
-        {
-          fprintf(stderr, "Cannot open file %s for input\n",
-                  tconfig.input_filename);
-          return ET_FILE_ERROR;
-        }
-    }
-  else // tconfig.input_stream_type == IT_CONSOLE
-    input_stream = stdin;
-  if (tconfig.output_stream_type == OT_FILE)
-    {
-      output_stream = fopen(tconfig.output_filename, "w");
-      if (! output_stream)
-        {
-          fprintf(stderr, "Cannot open file %s for output\n",
-                  tconfig.output_filename);
-          if (tconfig.input_stream_type == IT_FILE)
-            fclose(input_stream);
-          return ET_FILE_ERROR;
-        }
-    }
-  else // tconfig.output_stream_type == OT_CONSOLE
-    output_stream = stdout;
+  current_state = init_streams(&input_stream, &output_stream);
+  if (current_state != ET_CORRECT)
+    return current_state;
 
   struct simple_matrix matrix;
   struct simple_matrix result;

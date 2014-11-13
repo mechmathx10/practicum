@@ -210,6 +210,21 @@ make_unit_block_matrix(struct block_matrix *matrix, const int size)
 /* ----------------------------------------------------------- */
 
 void
+make_block_matrix_copy(const struct block_matrix * const sample_matrix,
+                       struct block_matrix *copy_matrix)
+{
+  copy_matrix->size = sample_matrix->size;
+  copy_matrix->block_size = sample_matrix->block_size;
+  copy_matrix->residue = sample_matrix->residue;
+  copy_matrix->full_block_count = sample_matrix->full_block_count;
+  copy_matrix->values = (double *) malloc(SQUARE_DOUB(copy_matrix->size));
+  memcpy(copy_matrix->values, sample_matrix->values,
+         SQUARE_DOUB(copy_matrix->size));
+}
+
+/* ----------------------------------------------------------- */
+
+void
 substract_unit_block_matrix(struct block_matrix *matrix)
 {
   double *cur_block_ptr;
@@ -241,6 +256,21 @@ get_block_matrix_element(const struct block_matrix * const matrix,
   return matrix->values[M * ((N * (i / M)) +
                             ((i / M == N / M ? N % M : M) * (j / M))) +
                         ((j / M == N / M ? N % M : M) * (i % M)) + j % M];
+}
+
+/* ----------------------------------------------------------- */
+
+void
+multiply_block_matrices(const struct block_matrix * const first_matrix,
+                        const struct block_matrix * const second_matrix,
+                        struct block_matrix *result)
+{
+  block buffer;
+  make_zero_block(&buffer, first_matrix->block_size);
+  UNUSED(first_matrix);
+  UNUSED(second_matrix);
+  UNUSED(result);
+  DELETE(buffer);
 }
 
 /* ----------------------------------------------------------- */

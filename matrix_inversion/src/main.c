@@ -155,49 +155,59 @@ func(int i, int j)
 
 /* ----------------------------------------------------------- */
 
+static
+enum error_type
+init_streams(FILE **input_stream, FILE **output_stream)
+{
+  if (mconfig.input_stream_type == IT_FILE)
+    {
+      *input_stream = fopen(mconfig.input_filename, "r");
+      if (! *input_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for input\n",
+                          mconfig.input_filename);
+          return ET_FILE_ERROR;
+        }
+    }
+  else // mconfig.input_stream_type == IT_CONSOLE || IT_GENERATE
+    *input_stream = stdin;
+  if (mconfig.output_stream_type == OT_FILE)
+    {
+      *output_stream = fopen(mconfig.output_filename, "w");
+      if (! *output_stream)
+        {
+          fprintf(stderr, "Cannot open file %s for output\n",
+                          mconfig.output_filename);
+          if (mconfig.input_stream_type == IT_FILE)
+            fclose(*input_stream);
+          return ET_FILE_ERROR;
+        }
+    }
+  else // mconfig.output_stream_type == OT_CONSOLE
+    *output_stream = stdout;
+  return ET_CORRECT;
+}
+
+/* ----------------------------------------------------------- */
+
 int
 main(int argc, char **argv)
 {
   int current_state = ET_CORRECT;
 
-#define OPTIONS_PARSE_SECTION
   current_state = process_options(argc, argv);
   if (current_state != ET_CORRECT)
     {
       fprintf(stderr, "Options processing failed.\n");
       return current_state;
     }
-#undef OPTIONS_PARSE_SECTION
 
 #define OPEN_FILE_SECTION
   FILE *input_stream = NULL;
   FILE *output_stream = NULL;
-  if (mconfig.input_stream_type == IT_FILE)
-    {
-      input_stream = fopen(mconfig.input_filename, "r");
-      if (! input_stream)
-        {
-          fprintf(stderr, "Cannot open file %s for input\n",
-                  mconfig.input_filename);
-          return ET_FILE_ERROR;
-        }
-    }
-  else // mconfig.input_stream_type == IT_CONSOLE || IT_GENERATE
-    input_stream = stdin;
-  if (mconfig.output_stream_type == OT_FILE)
-    {
-      output_stream = fopen(mconfig.output_filename, "w");
-      if (! output_stream)
-        {
-          fprintf(stderr, "Cannot open file %s for output\n",
-                  mconfig.output_filename);
-          if (mconfig.input_stream_type == IT_FILE)
-            fclose(input_stream);
-          return ET_FILE_ERROR;
-        }
-    }
-  else // mconfig.output_stream_type == OT_CONSOLE
-    output_stream = stdout;
+  current_state = init_streams(&input_stream, &output_stream);
+  if (current_state != ET_CORRECT)
+    return current_state;
 #undef OPEN_FILE_SECTION
 
 #define INPUT_SECTION
@@ -237,12 +247,7 @@ main(int argc, char **argv)
     fclose(input_stream);
 
   make_unit_block_matrix(&result, matrix.size);
-  saved_matrix.size = matrix.size;
-  saved_matrix.block_size = matrix.block_size;
-  saved_matrix.residue = matrix.residue;
-  saved_matrix.full_block_count = matrix.full_block_count;
-  saved_matrix.values = (double *) malloc(SQUARE_DOUB(saved_matrix.size));
-  memcpy(saved_matrix.values, matrix.values, SQUARE_DOUB(saved_matrix.size));
+  make_block_matrix_copy(&matrix, &saved_matrix);
   print_block_matrix_full_m(output_stream, &saved_matrix, "Saved matrix");
 #undef INPUT_SECTION
 

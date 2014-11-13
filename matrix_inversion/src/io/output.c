@@ -146,7 +146,7 @@ print_block_matrix_full(FILE *output_stream,
     {
       for (int j = 0; j < N; ++j)
         {
-          fprintf(output_stream, "%.3f\t",
+          fprintf(output_stream, "%.3lf\t",
                   get_block_matrix_element(matrix, i, j));
         }
       fprintf(output_stream, "\n");
