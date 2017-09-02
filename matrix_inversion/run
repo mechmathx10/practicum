@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ "$1" == "clean" ]
+	then
+		echo "Cleaning..."
+		make clean
+		echo "Done"
+		exit 1
+fi;
+
+make exe &&
+echo "---------- STARTED -----------" &&
+cd exe/ &&
+./main $@ &&
+cd .. &&
+echo "----------- DONE -------------"
